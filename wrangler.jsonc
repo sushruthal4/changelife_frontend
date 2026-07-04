@@ -1,0 +1,10 @@
+{
+  "name": "heart-fuel",
+  "main": "dist/server/server.js",
+  "compatibility_date": "2026-07-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS"
+  }
+}
