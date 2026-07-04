@@ -1,0 +1,351 @@
+import React from "react";
+import { Link, useParams } from "@tanstack/react-router";
+import {
+  ArrowLeft,
+  Banknote,
+  Calendar,
+  Copy,
+  Loader2,
+  QrCode,
+  ShieldCheck,
+  Target,
+} from "lucide-react";
+import { ImageGallery, VideoGallery } from "@/components/Cards";
+import { ErrorMessage } from "@/components/Error";
+import { PublicFooter, PublicHeader } from "@/components/Layout";
+import { LoadingSpinner } from "@/components/Loading";
+import { Badge } from "@/components/Stats";
+import { useToast } from "@/contexts/ToastContext";
+import { useCauseById } from "@/hooks/useCauses";
+import { usePaymentSettings } from "@/hooks/usePaymentSettings";
+import { getCauseGallery } from "@/lib/fallbackMedia";
+import { openUpiDeepLink } from "@/lib/upi";
+import { ORG } from "@/constants";
+
+const formatINR = (amount: number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(amount || 0));
+
+const normalizeAmount = (amount: number) => {
+  if (!Number.isFinite(amount)) return 0;
+  return Math.round(amount * 100) / 100;
+};
+
+const quickAmounts = [100, 200, 500, 1000];
+
+export const CauseDetailPage: React.FC = () => {
+  const params = useParams({ strict: false }) as { id?: string };
+  const [selectedAmount, setSelectedAmount] = React.useState("");
+  const [copied, setCopied] = React.useState("");
+  const [donorForm, setDonorForm] = React.useState({
+    donor_name: "",
+    donor_email: "",
+    donor_phone: "",
+  });
+  const [opening, setOpening] = React.useState(false);
+  const { data: cause, isLoading: causeLoading, error: causeError } = useCauseById(params.id);
+  const { data: paymentSettings = [] } = usePaymentSettings();
+  const activePayment = paymentSettings.find((p) => p.is_active) || paymentSettings[0];
+  const { addToast } = useToast();
+
+  const copyValue = async (label: string, value?: string | null) => {
+    if (!value) return;
+    await navigator.clipboard?.writeText(value);
+    setCopied(label);
+    window.setTimeout(() => setCopied(""), 1600);
+  };
+
+  const updateDonorForm = (key: keyof typeof donorForm, value: string) => {
+    setDonorForm((current) => ({ ...current, [key]: value }));
+  };
+
+  if (causeLoading) {
+    return (
+      <div className='min-h-screen bg-brand-bg'>
+        <PublicHeader />
+        <div className='mx-auto max-w-7xl px-4 py-12'>
+          <LoadingSpinner />
+        </div>
+        <PublicFooter />
+      </div>
+    );
+  }
+
+  if (!cause) {
+    return (
+      <div className='min-h-screen bg-brand-bg'>
+        <PublicHeader />
+        <div className='mx-auto max-w-7xl px-4 py-12'>
+          <ErrorMessage error={causeError || new Error("Cause not found")} />
+        </div>
+        <PublicFooter />
+      </div>
+    );
+  }
+
+  const mediaImages = getCauseGallery(cause);
+  const amount = Number(cause.target_amount || 0);
+  const payableAmount = normalizeAmount(selectedAmount ? Number(selectedAmount) : amount);
+  const upiId = activePayment?.upi_id?.trim() || ORG.upiId;
+  const upiPayeeName = activePayment?.upi_payee_name?.trim() || ORG.payeeName;
+  const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name || upiId);
+
+  const handleDonate = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!donorForm.donor_name.trim()) {
+      addToast("Please enter donor name", "warning");
+      return;
+    }
+    if (donorForm.donor_phone.replace(/\D/g, "").length < 10) {
+      addToast("Please enter a valid phone number", "warning");
+      return;
+    }
+    if (payableAmount < 1) {
+      addToast("Please enter a donation amount", "warning");
+      return;
+    }
+    if (!upiId) {
+      addToast("UPI ID is not configured", "warning");
+      return;
+    }
+
+    setOpening(true);
+    openUpiDeepLink({
+      upiId,
+      payeeName: upiPayeeName,
+      amount: payableAmount,
+      transactionRef: `HF-${Date.now()}`,
+      note: `Heart Fuel donation for ${cause.title}`,
+    });
+    addToast("Opening your UPI app. Complete the payment there.", "info");
+    window.setTimeout(() => setOpening(false), 1500);
+  };
+
+  return (
+    <div className='min-h-screen overflow-x-hidden bg-brand-bg'>
+      <PublicHeader />
+
+      <main className='mx-auto box-border w-full max-w-[100vw] overflow-x-hidden px-4 py-8 lg:max-w-7xl'>
+        <Link to='/causes' className='mb-5 inline-flex items-center gap-2 text-sm font-bold text-pink-500 hover:text-pink-600'>
+          <ArrowLeft className='h-4 w-4 text-pink-500' />
+          Back to causes
+        </Link>
+
+        <div className='grid min-w-0 max-w-[calc(100vw-2rem)] gap-8 lg:max-w-full lg:grid-cols-[minmax(0,1fr)_380px]'>
+          <div className='min-w-0 max-w-[calc(100vw-2rem)] space-y-6 overflow-hidden lg:max-w-full'>
+            <div className='overflow-hidden rounded-lg bg-brand-muted [&_img]:h-full [&_img]:w-full [&_img]:object-contain [&_video]:h-full [&_video]:w-full [&_video]:object-contain'>
+              <ImageGallery images={mediaImages} alt={cause.title} />
+            </div>
+
+            <section className='min-w-0 max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-brand-dark/10 bg-white p-5 shadow-sm sm:p-6 lg:max-w-full'>
+              <div className='mb-5 flex flex-wrap items-start justify-between gap-3'>
+                <div className='min-w-0'>
+                  <div className='mb-3 flex flex-wrap gap-2'>
+                    {cause.category && <Badge>{cause.category}</Badge>}
+                    {cause.is_featured && <Badge variant='warning'>Featured</Badge>}
+                    <Badge variant='success'>Verified</Badge>
+                  </div>
+                  <h1 className='max-w-full break-all text-2xl font-bold leading-tight text-brand-dark [overflow-wrap:anywhere] sm:break-words sm:text-3xl'>
+                    {cause.title}
+                  </h1>
+                </div>
+              </div>
+
+              <div className='mb-6 grid gap-3 text-sm text-brand-dark/70 sm:grid-cols-2'>
+                <span className='flex min-w-0 max-w-full items-center gap-2 break-all [overflow-wrap:anywhere] sm:break-words'>
+                  <Target className='h-4 w-4 flex-none text-pink-500' />
+                  {amount > 0 ? `${formatINR(amount)} donation amount` : "Donate any amount"}
+                </span>
+                {cause.created_at && (
+                  <span className='flex min-w-0 max-w-full items-center gap-2 break-all [overflow-wrap:anywhere] sm:break-words'>
+                    <Calendar className='h-4 w-4 flex-none text-pink-500' />
+                    {new Date(cause.created_at).toLocaleDateString("en-IN")}
+                  </span>
+                )}
+              </div>
+
+              <div className='mt-8'>
+                <h2 className='text-xl font-bold text-brand-dark'>About This Cause</h2>
+                <p className='mt-3 whitespace-pre-line break-all leading-7 text-brand-dark/70 [overflow-wrap:anywhere] sm:break-words'>
+                  {cause.full_description || "No full description added yet."}
+                </p>
+              </div>
+
+              <div className='mt-8 rounded border border-brand-dark/10 bg-brand-bg p-4 text-sm text-brand-dark/65'>
+                <p className='font-bold text-brand-dark'>Uploaded media</p>
+                <p className='mt-1'>
+                  {mediaImages.length} image{mediaImages.length === 1 ? "" : "s"} and {cause.videos?.length || 0} video
+                  {(cause.videos?.length || 0) === 1 ? "" : "s"} are attached to this cause.
+                </p>
+              </div>
+
+              {cause.videos?.length > 0 && (
+                <div className='mt-8'>
+                  <h2 className='mb-4 text-xl font-bold text-brand-dark'>Impact Videos</h2>
+                  <VideoGallery videos={cause.videos} />
+                </div>
+              )}
+            </section>
+          </div>
+
+          <aside className='h-max min-w-0 max-w-[calc(100vw-2rem)] rounded-lg border border-brand-dark/10 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:max-w-full'>
+            <div className='border-b border-brand-dark/10 pb-5 text-center'>
+              <p className='text-sm font-semibold text-brand-dark/60'>Donation Amount</p>
+              <p className='mt-1 break-words text-3xl font-bold text-brand-primary [overflow-wrap:anywhere] sm:text-4xl'>
+                {payableAmount > 0 ? formatINR(payableAmount) : "Open amount"}
+              </p>
+            </div>
+
+            <form onSubmit={handleDonate} className='mt-5 space-y-4'>
+              <div>
+                <span className='mb-2 block text-xs font-bold uppercase text-brand-dark/55'>
+                  Select amount
+                </span>
+                <div className='mb-3 grid grid-cols-2 gap-2'>
+                  {quickAmounts.map((amt) => (
+                    <button
+                      key={amt}
+                      type='button'
+                      onClick={() => setSelectedAmount(String(amt))}
+                      className={`rounded border px-3 py-2 text-sm font-bold ${
+                        selectedAmount === String(amt)
+                          ? "border-brand-warm bg-brand-warm text-white"
+                          : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
+                      }`}
+                    >
+                      ₹{amt}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type='number'
+                  min='1'
+                  inputMode='decimal'
+                  value={selectedAmount}
+                  onChange={(e) => setSelectedAmount(e.target.value)}
+                  className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-base font-bold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
+                  placeholder={amount > 0 ? `Default ${formatINR(amount)}` : "Custom amount"}
+                />
+              </div>
+
+              <div className='space-y-3 rounded border border-brand-dark/10 bg-brand-bg p-4'>
+                <h3 className='flex items-center gap-2 font-bold text-brand-dark'>
+                  <ShieldCheck className='h-4 w-4 text-pink-500' />
+                  Donor Details
+                </h3>
+                <input
+                  value={donorForm.donor_name}
+                  onChange={(e) => updateDonorForm("donor_name", e.target.value)}
+                  className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
+                  placeholder='Full name'
+                  autoComplete='name'
+                />
+                <input
+                  type='email'
+                  value={donorForm.donor_email}
+                  onChange={(e) => updateDonorForm("donor_email", e.target.value)}
+                  className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
+                  placeholder='Email'
+                  autoComplete='email'
+                />
+                <input
+                  type='tel'
+                  value={donorForm.donor_phone}
+                  onChange={(e) => updateDonorForm("donor_phone", e.target.value)}
+                  className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
+                  placeholder='Phone number'
+                  autoComplete='tel'
+                />
+              </div>
+
+              <button
+                type='submit'
+                disabled={opening}
+                className='inline-flex w-full items-center justify-center gap-2 rounded bg-brand-warm px-4 py-3 text-sm font-bold text-white hover:bg-brand-primary disabled:cursor-not-allowed disabled:opacity-70'
+              >
+                {opening ? (
+                  <Loader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  <QrCode className='h-4 w-4 text-pink-100' />
+                )}
+                {opening ? "Opening UPI App..." : "Pay With UPI"}
+              </button>
+            </form>
+
+            {hasBackupPayment && (
+              <div className='mt-5 space-y-4 border-t border-brand-dark/10 pt-5'>
+                <h3 className='flex items-center gap-2 font-bold text-brand-dark'>
+                  <Banknote className='h-4 w-4 text-pink-500' />
+                  Donation Methods
+                </h3>
+
+                {upiId && (
+                  <div className='rounded border border-brand-dark/10 p-4 text-sm text-brand-dark/70'>
+                    <p className='font-semibold text-brand-dark'>UPI</p>
+                    <PaymentRow label='UPI ID' value={upiId} onCopy={copyValue} />
+                    <PaymentRow label='Payee' value={upiPayeeName} onCopy={copyValue} />
+                  </div>
+                )}
+
+                {activePayment?.qr_image && (
+                  <div className='rounded bg-brand-muted p-4 text-sm'>
+                    <div className='mb-3 flex items-center justify-between gap-3'>
+                      <p className='font-semibold text-brand-dark'>QR Image</p>
+                      <QrCode className='h-5 w-5 text-pink-500' />
+                    </div>
+                    <img
+                      src={activePayment.qr_image}
+                      alt='Donation QR code'
+                      className='mx-auto h-44 w-44 rounded bg-white object-contain p-2'
+                    />
+                  </div>
+                )}
+
+                {activePayment?.bank_name && (
+                  <div className='rounded border border-brand-dark/10 p-4 text-sm text-brand-dark/70'>
+                    <p className='font-semibold text-brand-dark'>Bank Transfer</p>
+                    <PaymentRow label='Bank' value={activePayment.bank_name} onCopy={copyValue} />
+                    <PaymentRow label='Account Name' value={activePayment.account_name} onCopy={copyValue} />
+                    <PaymentRow label='Account Number' value={activePayment.account_number} onCopy={copyValue} />
+                    <PaymentRow label='IFSC' value={activePayment.ifsc_code} onCopy={copyValue} />
+                    <PaymentRow label='Branch' value={activePayment.branch_name} onCopy={copyValue} />
+                  </div>
+                )}
+
+                {copied && <p className='text-center text-xs font-bold text-brand-success'>{copied} copied</p>}
+              </div>
+            )}
+          </aside>
+        </div>
+      </main>
+
+      <PublicFooter />
+    </div>
+  );
+};
+
+const PaymentRow: React.FC<{
+  label: string;
+  value?: string | null;
+  onCopy: (label: string, value?: string | null) => void;
+}> = ({ label, value, onCopy }) => {
+  if (!value) return null;
+
+  return (
+    <button
+      type='button'
+      onClick={() => onCopy(label, value)}
+      className='mt-2 flex w-full items-center justify-between gap-3 rounded bg-brand-bg px-3 py-2 text-left hover:bg-brand-muted'
+    >
+      <span>
+        <span className='block text-xs font-semibold text-brand-dark/45'>{label}</span>
+        <span className='break-all font-semibold text-brand-dark'>{value}</span>
+      </span>
+      <Copy className='h-4 w-4 flex-none text-pink-500' />
+    </button>
+  );
+};
