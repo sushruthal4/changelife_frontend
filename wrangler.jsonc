@@ -8,5 +8,11 @@
   "assets": {
     "directory": "dist/client",
     "binding": "ASSETS"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "changelife.in/*",
+      "zone_name": "changelife.in"
+    }
+  ]
 }
