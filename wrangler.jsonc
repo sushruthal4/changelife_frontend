@@ -7,7 +7,7 @@
   ],
   "assets": {
     "directory": "dist/client",
-    "binding": "ASSETS"
+    "binding": "STATIC_ASSETS"
   },
   "routes": [
     {
