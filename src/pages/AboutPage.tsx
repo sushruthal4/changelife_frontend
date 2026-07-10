@@ -30,12 +30,12 @@ export const AboutPage: React.FC = () => {
       <PublicHeader />
       <PageBanner
         image={content.about?.bannerImage || heroChild}
-        alt="About Heart Fuel"
+        alt="About Change Life"
       />
 
       <section className='bg-brand-dark py-12 text-white md:py-16'>
         <div className='mx-auto max-w-7xl px-4'>
-          <p className='text-sm font-bold uppercase text-brand-warm'>About Heart Fuel</p>
+          <p className='text-sm font-bold uppercase text-brand-warm'>About Change Life</p>
           <h1 className='mt-2 text-4xl font-bold'>{content.organizationName}</h1>
           <p className='mt-3 max-w-3xl text-white/75'>{content.tagline}</p>
         </div>
@@ -65,7 +65,7 @@ export const AboutPage: React.FC = () => {
               <img
                 key={image}
                 src={image}
-                alt={`Heart Fuel about ${index + 1}`}
+                alt={`Change Life about ${index + 1}`}
                 className={`${index === 1 ? "mt-8" : ""} h-64 w-full rounded-lg object-cover`}
               />
             ))}

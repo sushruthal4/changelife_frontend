@@ -29,7 +29,7 @@ const getWhatsAppPhone = (content: typeof defaultSiteContent) =>
 const buildWhatsAppUrl = (phone: string, data: ContactFormData) => {
   const digits = phone.replace(/\D/g, "");
   const text = [
-    "*New message from Heart Fuel contact form*",
+    "*New message from Change Life contact form*",
     "",
     `*Name:* ${data.name}`,
     `*Email:* ${data.email}`,
@@ -71,7 +71,7 @@ export const ContactPage: React.FC = () => {
       <PublicHeader />
       <PageBanner
         image={content.contactPage?.bannerImage || causeMedical}
-        alt="Contact Heart Fuel"
+        alt="Contact Change Life"
       />
 
       <section className="bg-white px-4 py-9 text-center md:px-6">

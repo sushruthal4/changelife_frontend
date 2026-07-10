@@ -143,7 +143,7 @@ export interface SiteContentRecord {
 }
 
 export const defaultSiteContent: SiteContentData = {
-  organizationName: "Heart Fuel Foundation",
+  organizationName: "Change Life Foundation",
   tagline: "Give with heart. See real impact.",
   supportEmail: "",
   supportPhone: "",
@@ -159,14 +159,14 @@ export const defaultSiteContent: SiteContentData = {
   },
   hero: {
     eyebrow: "Transparent donations with photo and video proof",
-    title: "Heart Fuel Foundation",
+    title: "Change Life Foundation",
     description:
       "Support verified causes, donate directly, and see the real people your kindness reaches.",
   },
   about: {
     title: "Giving with proof, care, and accountability",
     description:
-      "Heart Fuel is a purpose-driven impact platform built to make giving simple, transparent, and meaningful. Every contribution is executed on the ground and documented with real photos, videos, and clear updates.",
+      "Change Life is a purpose-driven impact platform built to make giving simple, transparent, and meaningful. Every contribution is executed on the ground and documented with real photos, videos, and clear updates.",
     missionTitle: "Our Mission",
     mission:
       "To turn every donation into verified action, handled responsibly and shared back with the donor through visible proof.",

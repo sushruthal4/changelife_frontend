@@ -119,7 +119,7 @@ export const CauseDetailPage: React.FC = () => {
       payeeName: upiPayeeName,
       amount: payableAmount,
       transactionRef: `HF-${Date.now()}`,
-      note: `Heart Fuel donation for ${cause.title}`,
+      note: `Change Life donation for ${cause.title}`,
     });
     addToast("Opening your UPI app. Complete the payment there.", "info");
     window.setTimeout(() => setOpening(false), 1500);
@@ -211,11 +211,10 @@ export const CauseDetailPage: React.FC = () => {
                       key={amt}
                       type='button'
                       onClick={() => setSelectedAmount(String(amt))}
-                      className={`rounded border px-3 py-2 text-sm font-bold ${
-                        selectedAmount === String(amt)
+                      className={`rounded border px-3 py-2 text-sm font-bold ${selectedAmount === String(amt)
                           ? "border-brand-warm bg-brand-warm text-white"
                           : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
-                      }`}
+                        }`}
                     >
                       ₹{amt}
                     </button>

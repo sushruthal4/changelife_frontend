@@ -90,18 +90,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Heart Fuel — Give with Heart" },
+      { title: "Change Life — Give with Heart" },
       {
         name: "description",
         content:
-          "Heart Fuel is a transparent donation platform for verified causes with photo and video proof of impact.",
+          "Change Life is a transparent donation platform for verified causes with photo and video proof of impact.",
       },
       { name: "theme-color", content: "#ee6693" },
-      { property: "og:title", content: "Heart Fuel — Give with Heart" },
+      { property: "og:title", content: "Change Life — Give with Heart" },
       { property: "og:description", content: "Verified giving with transparent proof and direct donation details." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Heart Fuel — Give with Heart" },
+      { name: "twitter:title", content: "Change Life — Give with Heart" },
       { name: "twitter:description", content: "Verified giving with transparent proof and direct donation details." },
     ],
     links: [
@@ -207,9 +207,8 @@ function MobileBottomNav({ pathname }: { pathname: string }) {
           <Link
             key={to}
             to={to}
-            className={`flex h-[62px] flex-col items-center justify-center gap-1 text-[10px] font-semibold ${
-              isActive(to) ? "text-brand-primary" : "text-brand-dark/60"
-            }`}
+            className={`flex h-[62px] flex-col items-center justify-center gap-1 text-[10px] font-semibold ${isActive(to) ? "text-brand-primary" : "text-brand-dark/60"
+              }`}
           >
             <Icon className="h-5 w-5" />
             <span>{label}</span>

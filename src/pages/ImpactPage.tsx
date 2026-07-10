@@ -52,7 +52,7 @@ export const ImpactPage: React.FC = () => {
       <div className='relative'>
         <PageBanner
           image={content.impact?.bannerImage || causeEducation}
-          alt="Heart Fuel impact"
+          alt="Change Life impact"
         />
 
         {/* Dark gradient scrim so white text stays readable over any image */}

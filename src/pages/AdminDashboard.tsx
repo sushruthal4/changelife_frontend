@@ -55,7 +55,7 @@ export const AdminDashboard: React.FC = () => {
     <AdminShell>
       <div className='mb-8'>
         <h1 className='text-3xl font-bold text-brand-dark'>Dashboard</h1>
-        <p className='mt-1 text-brand-dark/60'>Manage the Heart Fuel API screens from one place.</p>
+        <p className='mt-1 text-brand-dark/60'>Manage the Change Life API screens from one place.</p>
       </div>
 
       {isLoading ? (

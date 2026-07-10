@@ -46,7 +46,7 @@ export const CausesPage: React.FC = () => {
       <div className="relative">
         <PageBanner
           image={causesPageText.bannerImage || causeMeal}
-          alt="Heart Fuel causes"
+          alt="Change Life causes"
         />
 
         {/* Dark gradient scrim so white text stays readable over any image */}

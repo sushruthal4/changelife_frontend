@@ -61,7 +61,7 @@ export const PublicHeader: React.FC = () => {
                 <HandHeart className='h-5 w-5' />
               </span>
               <span className='min-w-0 truncate text-xl font-extrabold leading-none'>
-                {content.organizationName?.replace(" Foundation", "") || "Heart Fuel"}
+                {content.organizationName?.replace(" Foundation", "") || "Change Life"}
               </span>
             </>
           )}
@@ -72,9 +72,8 @@ export const PublicHeader: React.FC = () => {
             <Link
               key={to}
               to={to}
-              className={`inline-flex items-center gap-1.5 text-sm font-semibold transition-colors ${
-                isActive(to) ? "text-brand-primary" : "text-brand-dark/70 hover:text-brand-primary"
-              }`}
+              className={`inline-flex items-center gap-1.5 text-sm font-semibold transition-colors ${isActive(to) ? "text-brand-primary" : "text-brand-dark/70 hover:text-brand-primary"
+                }`}
             >
               <Icon className='h-4 w-4' />
               {label}
@@ -105,9 +104,8 @@ export const PublicHeader: React.FC = () => {
               <Link
                 key={to}
                 to={to}
-                className={`inline-flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm font-semibold ${
-                  isActive(to) ? "bg-brand-primary/8 text-brand-primary" : "text-brand-dark/75"
-                }`}
+                className={`inline-flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm font-semibold ${isActive(to) ? "bg-brand-primary/8 text-brand-primary" : "text-brand-dark/75"
+                  }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Icon className='h-4 w-4' />
@@ -195,7 +193,7 @@ export const PublicFooter: React.FC = () => {
         </div>
 
         <div className='mt-7 border-t border-white/15 pt-5 text-xs text-white/65'>
-          <p>© {new Date().getFullYear()} {content.organizationName || "Heart Fuel"}</p>
+          <p>© {new Date().getFullYear()} {content.organizationName || "Change Life"}</p>
           <p className='mt-2'>
             <a href='#' className='hover:text-white'>Privacy policy</a>
             <span className='mx-2'>|</span>
@@ -228,7 +226,7 @@ export const AdminHeader: React.FC<{ onMenuClick?: () => void }> = ({ onMenuClic
             <span className='flex h-9 w-9 flex-none items-center justify-center rounded bg-pink-500 text-white'>
               <HandHeart className='h-5 w-5' />
             </span>
-            <span className='truncate'>Heart Fuel Admin</span>
+            <span className='truncate'>Change Life Admin</span>
           </Link>
         </div>
 

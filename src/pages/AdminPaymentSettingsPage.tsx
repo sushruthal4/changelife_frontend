@@ -203,9 +203,8 @@ export const AdminPaymentSettingsPage: React.FC = () => {
                   </p>
                 </div>
                 <span
-                  className={`rounded px-2 py-1 text-xs font-semibold ${
-                    setting.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                  }`}
+                  className={`rounded px-2 py-1 text-xs font-semibold ${setting.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
+                    }`}
                 >
                   {setting.is_active ? "Active" : "Inactive"}
                 </span>
@@ -293,7 +292,7 @@ export const AdminPaymentSettingsPage: React.FC = () => {
                   value={form.upi_payee_name}
                   onChange={(event) => updateForm("upi_payee_name", event.target.value)}
                   className='input-admin'
-                  placeholder='Heart Fuel Foundation'
+                  placeholder='Change Life Foundation'
                 />
               </Field>
             </div>

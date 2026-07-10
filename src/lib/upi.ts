@@ -19,7 +19,7 @@ export function buildUpiPaymentUrl({
     am: amount.toFixed(2),
     cu: "INR",
     tr: transactionRef,
-    tn: note || `Heart Fuel donation ${transactionRef}`,
+    tn: note || `Change Life donation ${transactionRef}`,
   });
 
   return `upi://pay?${params.toString()}`;
@@ -33,7 +33,7 @@ export function openUpiDeepLink(options: UpiPaymentOptions): void {
     am: options.amount.toFixed(2),
     cu: "INR",
     tr: options.transactionRef,
-    tn: options.note || `Heart Fuel donation ${options.transactionRef}`,
+    tn: options.note || `Change Life donation ${options.transactionRef}`,
   }).toString();
 
   // Try to open via a hidden anchor — most reliable way to trigger deep links on mobile

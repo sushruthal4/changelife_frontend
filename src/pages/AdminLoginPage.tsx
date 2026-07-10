@@ -43,7 +43,7 @@ export const AdminLoginPage: React.FC = () => {
               <span className='mb-5 flex h-14 w-14 items-center justify-center rounded bg-brand-primary text-white'>
                 <Heart className='h-7 w-7' />
               </span>
-              <h1 className='text-4xl font-bold'>Heart Fuel Admin</h1>
+              <h1 className='text-4xl font-bold'>Change Life Admin</h1>
               <p className='mt-4 max-w-sm leading-7 text-white/70'>
                 Manage causes, uploaded media, payment settings, site content, and admin users from one secure place.
               </p>
