@@ -1,5 +1,5 @@
 {
-  "name": "changelifefrontend",
+  "name": "changeliferontendproject",
   "main": "dist/server/server.js",
   "compatibility_date": "2026-07-01",
   "compatibility_flags": [
