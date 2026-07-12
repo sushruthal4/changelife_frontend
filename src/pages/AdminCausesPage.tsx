@@ -16,6 +16,7 @@ type CauseFormState = {
   title: string;
   full_description: string;
   target_amount: string;
+  unit_label: string;
   category: string;
   images: string;
   videos: string;
@@ -35,6 +36,7 @@ function toPayload(form: CauseFormState): CausePayload {
     title: form.title.trim(),
     full_description: form.full_description.trim(),
     target_amount: Number(form.target_amount) || 0,
+    unit_label: form.unit_label.trim() || null,
     category: form.category.trim(),
     images: parseLines(form.images),
     videos: parseLines(form.videos),
@@ -47,6 +49,7 @@ function formFromCause(cause: Cause): CauseFormState {
     title: cause.title || "",
     full_description: cause.full_description || "",
     target_amount: String(cause.target_amount || 0),
+    unit_label: cause.unit_label || "",
     category: cause.category || "",
     images: (cause.images || []).join("\n"),
     videos: (cause.videos || []).join("\n"),
@@ -57,7 +60,7 @@ function formFromCause(cause: Cause): CauseFormState {
 
 const emptyCauseForm: CauseFormState = {
   title: "", full_description: "",
-  target_amount: "0", category: "",
+  target_amount: "0", unit_label: "", category: "",
   images: "", videos: "",
   is_featured: false, is_active: true,
 };
@@ -197,8 +200,7 @@ export const AdminCausesPage: React.FC = () => {
                   </div>
                 )}
                 <span
-                  className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold ${cause.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                    }`}
+                  className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold ${cause.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}
                 >
                   {cause.is_active ? "Active" : "Inactive"}
                 </span>
@@ -212,7 +214,8 @@ export const AdminCausesPage: React.FC = () => {
                 <div className="flex-1">
                   <h2 className="font-bold text-brand-dark">{cause.title}</h2>
                   <p className="mt-1 text-sm font-semibold text-brand-dark/60">
-                    Donation amount: ₹{Number(cause.target_amount || 0).toLocaleString("en-IN")}
+                    ₹{Number(cause.target_amount || 0).toLocaleString("en-IN")}
+                    {cause.unit_label ? ` / ${cause.unit_label}` : ""}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {cause.category && (
@@ -275,7 +278,6 @@ export const AdminCausesPage: React.FC = () => {
           </Field>
 
           <div className="grid gap-4 md:grid-cols-2">
-            {/* Category dropdown — driven by shared CAUSE_CATEGORIES constant */}
             <Field label="Category">
               <select
                 value={form.category}
@@ -290,7 +292,7 @@ export const AdminCausesPage: React.FC = () => {
                 ))}
               </select>
             </Field>
-            <Field label="Donation Amount">
+            <Field label="Donation Amount (per unit)">
               <input
                 type="number"
                 min="0"
@@ -301,6 +303,15 @@ export const AdminCausesPage: React.FC = () => {
               />
             </Field>
           </div>
+
+          <Field label="Unit Label (e.g. Plate, Paw, Kit, Packet — shown on donation page multiplier)">
+            <input
+              value={form.unit_label}
+              onChange={(e) => updateForm("unit_label", e.target.value)}
+              className="input-admin"
+              placeholder="e.g. Plate"
+            />
+          </Field>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-3">

@@ -6,6 +6,8 @@ type UpiPaymentOptions = {
   note?: string;
 };
 
+const truncate = (str: string, max: number) => str.slice(0, max);
+
 export function buildUpiPaymentUrl({
   upiId,
   payeeName,
@@ -15,25 +17,26 @@ export function buildUpiPaymentUrl({
 }: UpiPaymentOptions) {
   const params = new URLSearchParams({
     pa: upiId,
-    pn: payeeName,
+    pn: truncate(payeeName, 50),
     am: amount.toFixed(2),
     cu: "INR",
-    tr: transactionRef,
-    tn: note || `Change Life donation ${transactionRef}`,
+    tr: truncate(transactionRef, 35),
+    tn: truncate(note || `Change Life donation ${transactionRef}`, 50),
+    mc: "8398",
   });
 
   return `upi://pay?${params.toString()}`;
 }
 
-// Opens UPI deep link — tries app-specific schemes first, falls back to generic upi://
 export function openUpiDeepLink(options: UpiPaymentOptions): void {
   const query = new URLSearchParams({
     pa: options.upiId,
-    pn: options.payeeName,
+    pn: truncate(options.payeeName, 50),
     am: options.amount.toFixed(2),
     cu: "INR",
-    tr: options.transactionRef,
-    tn: options.note || `Change Life donation ${options.transactionRef}`,
+    tr: truncate(options.transactionRef, 35),
+    tn: truncate(options.note || `Change Life donation ${options.transactionRef}`, 50),
+    mc: "8398",
   }).toString();
 
   // Try to open via a hidden anchor — most reliable way to trigger deep links on mobile

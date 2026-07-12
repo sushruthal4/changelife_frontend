@@ -5,6 +5,7 @@ export interface Cause {
   title: string;
   full_description?: string | null;
   target_amount: number;
+  unit_label?: string | null;
   category?: string | null;
   images: string[];
   videos: string[];

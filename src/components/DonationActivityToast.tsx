@@ -3,9 +3,9 @@ import { Heart, X } from "lucide-react";
 
 import { DONOR_ACTIVITY, type DonorActivityItem } from "@/data/donorActivity";
 
-const ROTATION_INTERVAL_MS = 40_000;
-const DISPLAY_DURATION_MS = 6_000;
-const FIRST_POPUP_DELAY_MS = 1_500;
+const ROTATION_INTERVAL_MS = 8_000;
+const DISPLAY_DURATION_MS = 3_500;
+const FIRST_POPUP_DELAY_MS = 1_000;
 const STORAGE_KEY = "heart-fuel-donor-activity-index";
 
 interface DonationActivityToastProps {

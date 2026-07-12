@@ -24,6 +24,8 @@ export const CAUSE_CATEGORIES = [
   { slug: "giving-to-the-needy", label: "Giving To The Needy" },
   { slug: "nature", label: "Nature" },
   { slug: "memorial-giving", label: "Memorial Giving" },
+  { slug: "child-care", label: "Child Care" },
+  { slug: "animal-care", label: "Animal Care" },
   { slug: "women-care", label: "Women Care" },
   { slug: "education", label: "Education" },
 ] as const;

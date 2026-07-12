@@ -34,11 +34,13 @@ const normalizeAmount = (amount: number) => {
   return Math.round(amount * 100) / 100;
 };
 
-const quickAmounts = [100, 200, 500, 1000];
+const quickAmounts = [50, 100, 200, 500, 1000, 2000];
+const multipliers = [1, 5, 10, 50, 100];
 
 export const CauseDetailPage: React.FC = () => {
   const params = useParams({ strict: false }) as { id?: string };
   const [selectedAmount, setSelectedAmount] = React.useState("");
+  const [multiplier, setMultiplier] = React.useState(1);
   const [copied, setCopied] = React.useState("");
   const [donorForm, setDonorForm] = React.useState({
     donor_name: "",
@@ -88,7 +90,15 @@ export const CauseDetailPage: React.FC = () => {
 
   const mediaImages = getCauseGallery(cause);
   const amount = Number(cause.target_amount || 0);
-  const payableAmount = normalizeAmount(selectedAmount ? Number(selectedAmount) : amount);
+  const unitPrice = amount > 0 ? amount : 0;
+  const unitLabel = cause.unit_label?.trim() || "Unit";
+  const payableAmount = normalizeAmount(
+    unitPrice > 0
+      ? unitPrice * multiplier
+      : selectedAmount
+      ? Number(selectedAmount)
+      : 0,
+  );
   const upiId = activePayment?.upi_id?.trim() || ORG.upiId;
   const upiPayeeName = activePayment?.upi_payee_name?.trim() || ORG.payeeName;
   const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name || upiId);
@@ -106,6 +116,10 @@ export const CauseDetailPage: React.FC = () => {
     }
     if (payableAmount < 1) {
       addToast("Please enter a donation amount", "warning");
+      return;
+    }
+    if (payableAmount > 100000) {
+      addToast("UPI limit is ₹1,00,000 per transaction. Please split into multiple payments.", "warning");
       return;
     }
     if (!upiId) {
@@ -201,20 +215,49 @@ export const CauseDetailPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleDonate} className='mt-5 space-y-4'>
+              {unitPrice > 0 && (
+                <div>
+                  <span className='mb-2 block text-xs font-bold uppercase text-brand-dark/55'>
+                    Choose in multiples of
+                  </span>
+                  <div className='mb-2 grid grid-cols-5 gap-1.5'>
+                    {multipliers.map((m) => (
+                      <button
+                        key={m}
+                        type='button'
+                        onClick={() => setMultiplier(m)}
+                        className={`rounded border px-2 py-2.5 text-center font-bold ${
+                          multiplier === m
+                            ? "border-brand-warm bg-brand-warm text-white"
+                            : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
+                        }`}
+                      >
+                        <span className='block text-sm font-extrabold leading-tight'>{m}</span>
+                        <span className='block text-[10px] font-semibold leading-tight opacity-80'>{unitLabel}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p className='text-xs font-semibold text-brand-dark/50'>
+                    {multiplier} {unitLabel} × {formatINR(unitPrice)} = {formatINR(unitPrice * multiplier)}
+                  </p>
+                </div>
+              )}
+
               <div>
                 <span className='mb-2 block text-xs font-bold uppercase text-brand-dark/55'>
                   Select amount
                 </span>
-                <div className='mb-3 grid grid-cols-2 gap-2'>
+                <div className='mb-3 grid grid-cols-3 gap-2'>
                   {quickAmounts.map((amt) => (
                     <button
                       key={amt}
                       type='button'
-                      onClick={() => setSelectedAmount(String(amt))}
-                      className={`rounded border px-3 py-2 text-sm font-bold ${selectedAmount === String(amt)
+                      onClick={() => setSelectedAmount(selectedAmount === String(amt) ? "" : String(amt))}
+                      className={`rounded border px-3 py-2 text-sm font-bold ${
+                        selectedAmount === String(amt)
                           ? "border-brand-warm bg-brand-warm text-white"
                           : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
-                        }`}
+                      }`}
                     >
                       ₹{amt}
                     </button>
@@ -227,7 +270,7 @@ export const CauseDetailPage: React.FC = () => {
                   value={selectedAmount}
                   onChange={(e) => setSelectedAmount(e.target.value)}
                   className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-base font-bold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
-                  placeholder={amount > 0 ? `Default ${formatINR(amount)}` : "Custom amount"}
+                  placeholder='Custom amount'
                 />
               </div>
 

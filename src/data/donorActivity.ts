@@ -72,7 +72,7 @@ const LAST_NAMES = [
 ] as const;
 
 const AMOUNTS = [
-  101, 151, 201, 251, 301, 351, 501, 551, 701, 751, 901, 1001, 1101, 1501, 2001,
+  101, 251, 501, 751, 1001, 1501, 2001, 2501, 3001, 3501, 5001, 7501, 10001, 12501, 15000,
 ] as const;
 
 const CAUSES = [
@@ -82,6 +82,8 @@ const CAUSES = [
   "Animal Feeding",
   "Elderly Support",
   "Emergency Relief",
+  "Child Care",
+  "Animal Care",
 ] as const;
 
 export const DONOR_ACTIVITY: DonorActivityItem[] = FIRST_NAMES.flatMap((firstName, firstIndex) =>
