@@ -1,6 +1,6 @@
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, MessageCircle, Phone, Send } from "lucide-react";
+import { Mail, Phone, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -21,33 +21,26 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
-
-const getWhatsAppPhone = (content: typeof defaultSiteContent) =>
-  WHATSAPP_NUMBER || content.whatsappNumber || content.supportPhone || ORG.whatsapp;
-
-const buildWhatsAppUrl = (phone: string, data: ContactFormData) => {
-  const digits = phone.replace(/\D/g, "");
-  const text = [
-    "*New message from Change Life contact form*",
-    "",
-    `*Name:* ${data.name}`,
-    `*Email:* ${data.email}`,
-    `*Phone:* ${data.phone}`,
-    `*Team:* ${data.team}`,
-    "",
-    "*Message:*",
-    data.message,
-  ].join("\n");
-
-  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+const buildMailtoUrl = (email: string, data: ContactFormData) => {
+  const subject = encodeURIComponent(`[Change Life] ${data.team} - Message from ${data.name}`);
+  const body = encodeURIComponent(
+    [
+      `Name: ${data.name}`,
+      `Email: ${data.email}`,
+      `Phone: ${data.phone}`,
+      `Team: ${data.team}`,
+      "",
+      "Message:",
+      data.message,
+    ].join("\n"),
+  );
+  return `mailto:${email}?subject=${subject}&body=${body}`;
 };
 
 export const ContactPage: React.FC = () => {
   const { data: siteRecord } = useSiteContent();
   const content = siteRecord?.content || defaultSiteContent;
-  const whatsappPhone = getWhatsAppPhone(content);
-  const supportPhone = content.supportPhone || whatsappPhone;
+  const supportPhone = content.supportPhone || ORG.supportPhone;
   const supportEmail = content.supportEmail || ORG.supportEmail;
 
   const {
@@ -62,7 +55,7 @@ export const ContactPage: React.FC = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     await new Promise((resolve) => window.setTimeout(resolve, 250));
-    window.open(buildWhatsAppUrl(whatsappPhone, data), "_blank", "noopener,noreferrer");
+    window.open(buildMailtoUrl(supportEmail, data), "_blank", "noopener,noreferrer");
     reset({ team: "" });
   };
 
@@ -86,12 +79,6 @@ export const ContactPage: React.FC = () => {
             <h2 className="text-[28px] font-semibold text-brand-primary md:text-[32px]">Contact Our Team</h2>
 
             <div className="mt-6 space-y-5">
-              <ContactInfoCard
-                icon={<MessageCircle className="h-6 w-6" />}
-                title="WhatsApp"
-                value={whatsappPhone}
-                href={`https://wa.me/${whatsappPhone.replace(/\D/g, "")}`}
-              />
               <ContactInfoCard
                 icon={<Phone className="h-6 w-6" />}
                 title="Phone"
@@ -167,7 +154,7 @@ export const ContactPage: React.FC = () => {
                 className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-primary px-8 py-3.5 text-base font-semibold text-white transition hover:bg-[#d9467a] disabled:opacity-60"
               >
                 <Send className="h-4 w-4" />
-                {isSubmitting ? "Opening WhatsApp..." : "Submit"}
+                {isSubmitting ? "Sending..." : "Submit"}
               </button>
             </div>
           </form>

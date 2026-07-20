@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Heart, ImageOff, MessageCircle } from "lucide-react";
+import { ArrowRight, Heart, ImageOff, Mail } from "lucide-react";
 import { Cause } from "@/lib/api/causes";
 import { getCauseImage } from "@/lib/fallbackMedia";
 import { ORG } from "@/constants";
@@ -10,7 +10,7 @@ interface CauseCardProps {
   isAdmin?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
-  whatsappPhone?: string;
+  supportEmail?: string;
 }
 
 const formatINR = (amount: number) =>
@@ -20,10 +20,10 @@ const formatINR = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(Number(amount || 0));
 
-const buildWhatsAppCauseUrl = (phone: string, causeTitle: string) => {
-  const digits = phone.replace(/\D/g, "");
-  const text = encodeURIComponent(`Hi, I want to know more about donating for "${causeTitle}".`);
-  return `https://wa.me/${digits}?text=${text}`;
+const buildEmailCauseUrl = (email: string, causeTitle: string) => {
+  const subject = encodeURIComponent(`Donation enquiry: ${causeTitle}`);
+  const body = encodeURIComponent(`Hi, I want to know more about donating for "${causeTitle}".`);
+  return `mailto:${email}?subject=${subject}&body=${body}`;
 };
 
 export const CauseCard: React.FC<CauseCardProps> = ({
@@ -31,11 +31,11 @@ export const CauseCard: React.FC<CauseCardProps> = ({
   isAdmin,
   onEdit,
   onDelete,
-  whatsappPhone,
+  supportEmail,
 }) => {
   const image = getCauseImage(cause);
   const donationAmount = Number(cause.target_amount || 0);
-  const chatPhone = (whatsappPhone || ORG.whatsapp).replace(/\D/g, "");
+  const email = supportEmail || ORG.supportEmail;
 
   return (
     <article className='group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)]'>
@@ -57,15 +57,15 @@ export const CauseCard: React.FC<CauseCardProps> = ({
           )}
         </Link>
 
-        {!isAdmin && chatPhone && (
+        {!isAdmin && email && (
           <a
-            href={buildWhatsAppCauseUrl(chatPhone, cause.title)}
+            href={buildEmailCauseUrl(email, cause.title)}
             target='_blank'
             rel='noreferrer'
-            aria-label={`Chat on WhatsApp about ${cause.title}`}
-            className='absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#25d366] text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition hover:scale-105'
+            aria-label={`Email about ${cause.title}`}
+            className='absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-primary text-white shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition hover:scale-105'
           >
-            <MessageCircle className='h-5 w-5' />
+            <Mail className='h-5 w-5' />
           </a>
         )}
       </div>

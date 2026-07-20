@@ -9,7 +9,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { Gauge, Heart, Home, Mail, MessageCircle } from "lucide-react";
+import { Gauge, Heart, Home, Mail } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -152,35 +152,26 @@ function PublicQuickActions() {
   const location = useLocation();
   const { data: siteRecord } = useSiteContent();
   const content = siteRecord?.content || defaultSiteContent;
-  const configuredPhone =
-    (import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined) ||
-    content.whatsappNumber ||
-    content.supportPhone ||
-    ORG.whatsapp;
-  const phone = configuredPhone.replace(/\D/g, "");
+  const supportEmail = content.supportEmail || ORG.supportEmail;
   const isAdmin = location.pathname.startsWith("/admin");
   const donorActivity = mergeDonorActivity(content.donationActivity);
-  const whatsappText = encodeURIComponent(
-    "Hey, I'm exploring your website and would love to understand how I can contribute.",
-  );
+  const mailtoHref = `mailto:${supportEmail}?subject=${encodeURIComponent("Hi, I want to contribute")}&body=${encodeURIComponent("Hey, I'm exploring your website and would love to understand how I can contribute.")}`;
 
   return (
     <>
       {!isAdmin && <DonationActivityToast activity={donorActivity} />}
 
-      {phone && (
+      {supportEmail && (
         <a
-          href={`https://wa.me/${phone}?text=${whatsappText}`}
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Chat with us on WhatsApp"
-          className="animate-wa-float fixed bottom-24 right-4 z-[9999] inline-flex items-center gap-2 rounded-full bg-[#25d366] px-3 py-2 text-xs font-semibold text-white shadow-[0_6px_16px_rgba(0,0,0,0.22)] transition hover:bg-[#1ebe5d] md:bottom-8 md:right-5 md:text-sm"
+          href={mailtoHref}
+          aria-label="Email us"
+          className="animate-wa-float fixed bottom-24 right-4 z-[9999] inline-flex items-center gap-2 rounded-full bg-brand-primary px-3 py-2 text-xs font-semibold text-white shadow-[0_6px_16px_rgba(0,0,0,0.22)] transition hover:bg-[#d9467a] md:bottom-8 md:right-5 md:text-sm"
         >
           <span className="relative inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/18 md:h-8 md:w-8">
             <span className="animate-wa-ring absolute -inset-1.5 rounded-full border border-white/55" />
-            <MessageCircle className="relative h-4 w-4 md:h-5 md:w-5" />
+            <Mail className="relative h-4 w-4 md:h-5 md:w-5" />
           </span>
-          <span className="hidden sm:inline">Chat with us</span>
+          <span className="hidden sm:inline">Email us</span>
         </a>
       )}
 

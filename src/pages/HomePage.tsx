@@ -24,7 +24,6 @@ import causeDisaster from "@/assets/cause-disaster.jpg";
 import causeEducation from "@/assets/cause-education.jpg";
 import causeElderly from "@/assets/cause-elderly.jpg";
 import causeMeal from "@/assets/cause-meal.jpg";
-import causeMedical from "@/assets/cause-medical.jpg";
 import heroChild from "@/assets/hero-child.jpg";
 import { CauseCard } from "@/components/Cards";
 import { PublicFooter, PublicHeader } from "@/components/Layout";
@@ -85,15 +84,10 @@ const CORE_VALUES = [
   },
 ];
 
+const TREE_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCpfKqNrXOUV2msWPXsi02WCCU2i3Xact_-b00kXdt9A&s=10";
+const TREE_BLOG_IMAGE = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBhXtL4jroEzOeC3GNmQ6wjEdhJaJHgjRKYwEUXEp5wg&s=10";
+
 const STORY_BLOCKS = [
-  {
-    title: "A Birthday They Will Always Remember",
-    text: "Celebrate your special day by feeding children, supporting families, and receiving genuine photos and videos that show the difference you created.",
-    cta: "Donate Now",
-    image: heroChild,
-    to: "/causes",
-    dark: true,
-  },
   {
     title: "Shaping Futures Through Education",
     text: "Education creates opportunity where it is needed most. Your support helps children access learning material, confidence, and a better future.",
@@ -102,20 +96,60 @@ const STORY_BLOCKS = [
     to: "/causes",
     dark: true,
   },
-  {
-    title: "Be Part of Something Meaningful",
-    text: "Join a community of people who turn compassion into action through verified drives, volunteer support, and clear donor updates.",
-    cta: "Contact Us",
-    image: causeMedical,
-    to: "/contact",
-    dark: false,
-  },
 ];
+
+const MeaningfulBirthdaySection: React.FC = () => (
+  <section className="bg-[#8f174d] px-4 py-12 text-white md:px-6 md:py-20">
+    <div className="mx-auto max-w-[1400px] space-y-16">
+      <div className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+        <div className="overflow-hidden rounded-lg">
+          <img src={TREE_IMAGE} alt="" className="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+        </div>
+        <div>
+          <h2 className="text-[30px] font-bold leading-tight text-[#ffd1e3] md:text-[40px]">
+            Be Part of Something Meaningful
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-white/78">
+            Join a community of people who turn compassion into action through verified drives, volunteer support, and clear donor updates.
+          </p>
+          <Link
+            to="/contact"
+            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#ffd1e3] px-8 py-3 text-sm font-bold text-white transition hover:bg-[#ffd1e3] hover:text-[#8f174d]"
+          >
+            Contact Us
+          </Link>
+        </div>
+      </div>
+
+      <div className="border-t border-white/15" />
+
+      <div className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+        <div className="overflow-hidden rounded-lg md:order-2">
+          <img src={heroChild} alt="" className="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+        </div>
+        <div className="md:order-1">
+          <h2 className="text-[30px] font-bold leading-tight text-[#ffd1e3] md:text-[40px]">
+            A Birthday They Will Always Remember
+          </h2>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-white/78">
+            Celebrate your special day by feeding children, supporting families, and receiving genuine photos and videos that show the difference you created.
+          </p>
+          <Link
+            to="/causes"
+            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#ffd1e3] px-8 py-3 text-sm font-bold text-white transition hover:bg-[#ffd1e3] hover:text-[#8f174d]"
+          >
+            Donate Now
+          </Link>
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 const FALLBACK_GALLERY = [
   causeMeal,
   causeEducation,
-  causeMedical,
+  causeAnimals,
   heroChild,
   causeElderly,
   causeAnimals,
@@ -142,7 +176,7 @@ const BLOG_POSTS = [
     title: "Why Planting a Tree in Someone's Name Is a Thoughtful Gift",
     excerpt: "A living tribute can carry memory, shade, and hope into the years ahead.",
     date: "January 2, 2026",
-    image: causeElderly,
+    image: TREE_BLOG_IMAGE,
   },
 ];
 
@@ -151,36 +185,14 @@ const FEATURED_IN = ["Impact Daily", "Giving Times", "Hope Journal", "Kindness W
 
 const FAQS = [
   {
-    question: "When will I receive updates on my donation?",
-    answer:
-      "Photo and video updates are shared after the selected drive is completed. For date-based donations, updates are usually sent by the end of the chosen day.",
-  },
-  {
-    question: "How will I receive the pictures and videos?",
-    answer:
-      "Updates are sent directly on WhatsApp and email using the contact details shared during donation.",
-  },
-  {
-    question: "What if I do not receive my pictures or videos on time?",
-    answer:
-      "The support team can help through WhatsApp, phone, or email. Every donation is tracked so delayed updates can be resolved quickly.",
-  },
-  {
-    question: "Are the pictures and videos personalized?",
-    answer:
-      "Wherever the selected cause allows it, updates can include the donor name, a message board, or a short thank-you clip.",
-  },
-  {
     question: "Where will my donation be executed?",
     answer:
       "Donations are executed at verified on-ground locations by trusted field teams and local partners.",
   },
 ];
 
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
-
-const getWhatsAppPhone = (content: typeof defaultSiteContent) =>
-  WHATSAPP_NUMBER || content.whatsappNumber || content.supportPhone || ORG.whatsapp;
+const getSupportEmail = (content: typeof defaultSiteContent) =>
+  content.supportEmail || ORG.supportEmail;
 
 const SectionHeader: React.FC<{ title: string; subtitle?: string; eyebrow?: string }> = ({
   title,
@@ -248,8 +260,8 @@ const ImpactStats: React.FC<{
 
 const FeaturedCauseScroller: React.FC<{
   causes: Cause[];
-  whatsappPhone: string;
-}> = ({ causes = [], whatsappPhone }) => {
+  supportEmail: string;
+}> = ({ causes = [], supportEmail }) => {
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const intervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -302,7 +314,7 @@ const FeaturedCauseScroller: React.FC<{
             key={cause.id}
             className="featured-cause-slide min-w-0 flex-none snap-start"
           >
-            <CauseCard cause={cause} whatsappPhone={whatsappPhone} />
+            <CauseCard cause={cause} supportEmail={supportEmail} />
           </div>
         ))}
       </div>
@@ -482,7 +494,7 @@ const TrustSection: React.FC = () => (
           every action is tracked, honest, and accountable.
         </p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {["Photo proof", "Video proof", "Verified teams", "Clear updates"].map((item) => (
+          {["Verified teams", "Clear updates"].map((item) => (
             <div key={item} className="flex items-center gap-3 rounded-lg border border-brand-primary/12 bg-[#fff5f9] p-4">
               <BadgeCheck className="h-5 w-5 flex-none text-brand-primary" />
               <span className="text-sm font-bold text-brand-dark">{item}</span>
@@ -542,7 +554,7 @@ export const HomePage: React.FC = () => {
   const { data: siteRecord } = useSiteContent();
   const { data: causes = [], isLoading: causesLoading } = useCauses({ active: true });
   const content = siteRecord?.content || defaultSiteContent;
-  const whatsappPhone = getWhatsAppPhone(content);
+  const supportEmail = getSupportEmail(content);
   const heroVideo = content.hero.video || GIVEA_HERO_VIDEO;
   const heroImage = content.hero.image || heroChild;
   const [activeCategory, setActiveCategory] = React.useState("");
@@ -614,7 +626,7 @@ export const HomePage: React.FC = () => {
               <p className="font-bold">No featured causes yet</p>
             </div>
           ) : (
-            <FeaturedCauseScroller causes={scrollCauses} whatsappPhone={whatsappPhone} />
+            <FeaturedCauseScroller causes={scrollCauses} supportEmail={supportEmail} />
           )}
         </div>
       </section>
@@ -675,9 +687,11 @@ export const HomePage: React.FC = () => {
               <p className="mt-2 text-sm text-brand-dark/55">Try a different category or search term.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-6">
+            <div className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3 xl:grid-cols-4 xl:gap-6" style={{ scrollbarWidth: "none" }}>
               {filteredCauses.map((cause) => (
-                <CauseCard key={cause.id} cause={cause} whatsappPhone={whatsappPhone} />
+                <div key={cause.id} className="w-full flex-none snap-start sm:w-auto">
+                  <CauseCard cause={cause} supportEmail={supportEmail} />
+                </div>
               ))}
             </div>
           )}
@@ -694,6 +708,8 @@ export const HomePage: React.FC = () => {
       </section>
 
       <ValueGrid />
+
+      <MeaningfulBirthdaySection />
 
       {STORY_BLOCKS.map((block, index) => (
         <StoryBand key={block.title} {...block} reverse={index % 2 === 1} />

@@ -14,10 +14,6 @@ import { CAUSE_CATEGORIES, getCategoryLabel } from "@/lib/api/causeCategories";
 import { defaultSiteContent } from "@/lib/api/siteContent";
 
 const FEATURED_FILTER = "__featured";
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER as string | undefined;
-
-const getWhatsAppPhone = (content: typeof defaultSiteContent) =>
-  WHATSAPP_NUMBER || content.whatsappNumber || content.supportPhone || ORG.whatsapp;
 
 export const CausesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,7 +22,7 @@ export const CausesPage: React.FC = () => {
   const { data: siteRecord } = useSiteContent();
   const content = siteRecord?.content || defaultSiteContent;
   const causesPageText = { ...defaultSiteContent.causesPage, ...content.causesPage };
-  const whatsappPhone = getWhatsAppPhone(content);
+  const supportEmail = content.supportEmail || ORG.supportEmail;
 
   const filteredCauses = causes.filter((cause) => {
     const categoryLabel = cause.category ? getCategoryLabel(cause.category) : "";
@@ -114,9 +110,11 @@ export const CausesPage: React.FC = () => {
               <p className="mb-5 text-sm font-semibold text-brand-dark/50">
                 Showing <span className="font-bold text-brand-primary">{filteredCauses.length}</span> of {causes.length} causes
               </p>
-              <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-6">
+              <div className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3 xl:grid-cols-4 xl:gap-6" style={{ scrollbarWidth: "none" }}>
                 {filteredCauses.map((cause) => (
-                  <CauseCard key={cause.id} cause={cause} whatsappPhone={whatsappPhone} />
+                  <div key={cause.id} className="w-full flex-none snap-start sm:w-auto">
+                    <CauseCard cause={cause} supportEmail={supportEmail} />
+                  </div>
                 ))}
               </div>
             </>

@@ -44,7 +44,6 @@ export const CauseDetailPage: React.FC = () => {
   const [copied, setCopied] = React.useState("");
   const [donorForm, setDonorForm] = React.useState({
     donor_name: "",
-    donor_email: "",
     donor_phone: "",
   });
   const [opening, setOpening] = React.useState(false);
@@ -106,14 +105,6 @@ export const CauseDetailPage: React.FC = () => {
   const handleDonate = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!donorForm.donor_name.trim()) {
-      addToast("Please enter donor name", "warning");
-      return;
-    }
-    if (donorForm.donor_phone.replace(/\D/g, "").length < 10) {
-      addToast("Please enter a valid phone number", "warning");
-      return;
-    }
     if (payableAmount < 1) {
       addToast("Please enter a donation amount", "warning");
       return;
@@ -283,16 +274,8 @@ export const CauseDetailPage: React.FC = () => {
                   value={donorForm.donor_name}
                   onChange={(e) => updateDonorForm("donor_name", e.target.value)}
                   className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
-                  placeholder='Full name'
+                  placeholder='Full name (optional)'
                   autoComplete='name'
-                />
-                <input
-                  type='email'
-                  value={donorForm.donor_email}
-                  onChange={(e) => updateDonorForm("donor_email", e.target.value)}
-                  className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
-                  placeholder='Email'
-                  autoComplete='email'
                 />
                 <input
                   type='tel'

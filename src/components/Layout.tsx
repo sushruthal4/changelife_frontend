@@ -13,7 +13,6 @@ import {
   Mail,
   MapPin,
   Menu,
-  Phone,
   Send,
   Settings,
   Users,
@@ -187,7 +186,6 @@ export const PublicFooter: React.FC = () => {
         )}
 
         <div className='mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-white/70'>
-          {content.supportPhone && <span className='inline-flex items-center gap-1.5'><Phone className='h-3.5 w-3.5' /> {content.supportPhone}</span>}
           {content.supportEmail && <span className='inline-flex items-center gap-1.5'><Mail className='h-3.5 w-3.5' /> {content.supportEmail}</span>}
           {content.address && <span className='inline-flex items-center gap-1.5'><MapPin className='h-3.5 w-3.5' /> {content.address}</span>}
         </div>

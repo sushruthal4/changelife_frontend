@@ -19,18 +19,22 @@ export type CauseCategory = {
 export type CauseCategoryPayload = CauseCategory;
 
 export const CAUSE_CATEGORIES: CauseCategory[] = [
+  { slug: "emergency-need", label: "Emergency Need", icon: "🚨" },
+  { slug: "children-care", label: "Children Care", icon: "👶" },
+  { slug: "women-care", label: "Women Care", icon: "💜" },
+  { slug: "animal-need", label: "Animal Need", icon: "🐾" },
+  { slug: "education", label: "Education", icon: "📚" },
   { slug: "birthday-giving", label: "Birthday Giving", icon: "🎂" },
   { slug: "anniversary-giving", label: "Anniversary Giving", icon: "💍" },
-  { slug: "animal", label: "Animal", icon: "🐾" },
   { slug: "giving-to-the-needy", label: "Giving To The Needy", icon: "🤝" },
   { slug: "nature", label: "Nature", icon: "🌿" },
   { slug: "memorial-giving", label: "Memorial Giving", icon: "🕯️" },
-  { slug: "women-care", label: "Women Care", icon: "💜" },
-  { slug: "education", label: "Education", icon: "📚" },
 ];
 
 /** Given a slug stored on a cause, return the display label. Falls back to the raw slug. */
 export function getCategoryLabel(slug: string): string {
+  if (slug === "animal" || slug === "animal-care") return "Animal Need";
+  if (slug === "child-care") return "Children Care";
   return CAUSE_CATEGORIES.find((c) => c.slug === slug)?.label ?? slug;
 }
 

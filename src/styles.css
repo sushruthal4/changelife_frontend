@@ -142,7 +142,7 @@
 }
 
 .featured-cause-slide {
-  width: calc((100% - 0.5rem) / 2);
+  width: 100%;
 }
 
 @media (min-width: 640px) {
