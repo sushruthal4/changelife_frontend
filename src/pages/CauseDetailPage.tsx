@@ -3,7 +3,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Banknote,
-  Calendar,
   Copy,
   Loader2,
   QrCode,
@@ -89,6 +88,9 @@ export const CauseDetailPage: React.FC = () => {
 
   const mediaImages = getCauseGallery(cause);
   const amount = Number(cause.target_amount || 0);
+  const raisedAmount = Number(cause.raised_amount || 0);
+  const unitAmount = Number(cause.unit_amount || 0);
+  const progressPct = amount > 0 ? Math.min(100, Math.round((raisedAmount / amount) * 100)) : 0;
   const unitPrice = amount > 0 ? amount : 0;
   const unitLabel = cause.unit_label?.trim() || "Unit";
   const payableAmount = normalizeAmount(
@@ -160,18 +162,37 @@ export const CauseDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className='mb-6 grid gap-3 text-sm text-brand-dark/70 sm:grid-cols-2'>
-                <span className='flex min-w-0 max-w-full items-center gap-2 break-all [overflow-wrap:anywhere] sm:break-words'>
+              {/* Progress bar */}
+              {amount > 0 && (
+                <div className='mb-6 rounded-lg border border-brand-dark/10 bg-brand-bg p-4'>
+                  <div className='mb-2 flex items-center justify-between text-sm font-semibold'>
+                    <span className='text-brand-dark'>Raised</span>
+                    <span className='text-brand-primary'>{progressPct}%</span>
+                  </div>
+                  <div className='h-3 w-full overflow-hidden rounded-full bg-brand-dark/10'>
+                    <div
+                      className='h-full rounded-full bg-brand-primary transition-all duration-700'
+                      style={{ width: `${progressPct}%` }}
+                    />
+                  </div>
+                  <div className='mt-2 flex items-center justify-between text-xs font-semibold text-brand-dark/60'>
+                    <span>{formatINR(raisedAmount)} raised</span>
+                    <span>Goal: {formatINR(amount)}</span>
+                  </div>
+                  {unitAmount > 0 && (
+                    <div className='mt-2 border-t border-brand-dark/10 pt-2 text-xs font-semibold text-brand-dark/50'>
+                      Amount: {formatINR(unitAmount)}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {amount > 0 && (
+                <div className='mb-6 flex items-center gap-2 text-sm text-brand-dark/70'>
                   <Target className='h-4 w-4 flex-none text-pink-500' />
-                  {amount > 0 ? `${formatINR(amount)} donation amount` : "Donate any amount"}
-                </span>
-                {cause.created_at && (
-                  <span className='flex min-w-0 max-w-full items-center gap-2 break-all [overflow-wrap:anywhere] sm:break-words'>
-                    <Calendar className='h-4 w-4 flex-none text-pink-500' />
-                    {new Date(cause.created_at).toLocaleDateString("en-IN")}
-                  </span>
-                )}
-              </div>
+                  <span>{formatINR(amount)} goal amount</span>
+                </div>
+              )}
 
               <div className='mt-8'>
                 <h2 className='text-xl font-bold text-brand-dark'>About This Cause</h2>
@@ -198,14 +219,7 @@ export const CauseDetailPage: React.FC = () => {
           </div>
 
           <aside className='h-max min-w-0 max-w-[calc(100vw-2rem)] rounded-lg border border-brand-dark/10 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:max-w-full'>
-            <div className='border-b border-brand-dark/10 pb-5 text-center'>
-              <p className='text-sm font-semibold text-brand-dark/60'>Donation Amount</p>
-              <p className='mt-1 break-words text-3xl font-bold text-brand-primary [overflow-wrap:anywhere] sm:text-4xl'>
-                {payableAmount > 0 ? formatINR(payableAmount) : "Open amount"}
-              </p>
-            </div>
-
-            <form onSubmit={handleDonate} className='mt-5 space-y-4'>
+            <form onSubmit={handleDonate} className='space-y-4'>
               {unitPrice > 0 && (
                 <div>
                   <span className='mb-2 block text-xs font-bold uppercase text-brand-dark/55'>
@@ -228,8 +242,8 @@ export const CauseDetailPage: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  <p className='text-xs font-semibold text-brand-dark/50'>
-                    {multiplier} {unitLabel} × {formatINR(unitPrice)} = {formatINR(unitPrice * multiplier)}
+                  <p className='rounded bg-brand-bg px-3 py-2 text-xs font-bold text-brand-dark'>
+                    {multiplier} {unitLabel} × {formatINR(unitPrice)} = <span className='text-brand-primary'>{formatINR(unitPrice * multiplier)}</span>
                   </p>
                 </div>
               )}
@@ -264,6 +278,13 @@ export const CauseDetailPage: React.FC = () => {
                   placeholder='Custom amount'
                 />
               </div>
+
+              {payableAmount > 0 && (
+                <div className='rounded bg-brand-primary/8 px-4 py-3 text-center'>
+                  <p className='text-xs font-semibold text-brand-dark/60'>You are paying</p>
+                  <p className='text-2xl font-extrabold text-brand-primary'>{formatINR(payableAmount)}</p>
+                </div>
+              )}
 
               <div className='space-y-3 rounded border border-brand-dark/10 bg-brand-bg p-4'>
                 <h3 className='flex items-center gap-2 font-bold text-brand-dark'>

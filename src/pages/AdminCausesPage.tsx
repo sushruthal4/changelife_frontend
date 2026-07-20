@@ -16,6 +16,8 @@ type CauseFormState = {
   title: string;
   full_description: string;
   target_amount: string;
+  raised_amount: string;
+  unit_amount: string;
   unit_label: string;
   category: string;
   images: string;
@@ -36,6 +38,8 @@ function toPayload(form: CauseFormState): CausePayload {
     title: form.title.trim(),
     full_description: form.full_description.trim(),
     target_amount: Number(form.target_amount) || 0,
+    raised_amount: Number(form.raised_amount) || 0,
+    unit_amount: Number(form.unit_amount) || 0,
     unit_label: form.unit_label.trim() || null,
     category: form.category.trim(),
     images: parseLines(form.images),
@@ -49,6 +53,8 @@ function formFromCause(cause: Cause): CauseFormState {
     title: cause.title || "",
     full_description: cause.full_description || "",
     target_amount: String(cause.target_amount || 0),
+    raised_amount: String(cause.raised_amount || 0),
+    unit_amount: String(cause.unit_amount || 0),
     unit_label: cause.unit_label || "",
     category: cause.category || "",
     images: (cause.images || []).join("\n"),
@@ -60,7 +66,7 @@ function formFromCause(cause: Cause): CauseFormState {
 
 const emptyCauseForm: CauseFormState = {
   title: "", full_description: "",
-  target_amount: "0", unit_label: "", category: "",
+  target_amount: "0", raised_amount: "0", unit_amount: "0", unit_label: "", category: "",
   images: "", videos: "",
   is_featured: false, is_active: true,
 };
@@ -217,6 +223,20 @@ export const AdminCausesPage: React.FC = () => {
                     ₹{Number(cause.target_amount || 0).toLocaleString("en-IN")}
                     {cause.unit_label ? ` / ${cause.unit_label}` : ""}
                   </p>
+                  {Number(cause.target_amount) > 0 && (() => {
+                    const pct = Math.min(100, Math.round((Number(cause.raised_amount || 0) / Number(cause.target_amount)) * 100));
+                    return (
+                      <div className="mt-3">
+                        <div className="mb-1 flex justify-between text-xs font-semibold text-brand-dark/60">
+                          <span>₹{Number(cause.raised_amount || 0).toLocaleString("en-IN")} raised</span>
+                          <span>{pct}%</span>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-brand-dark/10">
+                          <div className="h-full rounded-full bg-pink-500" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <div className="mt-3 flex flex-wrap gap-2">
                     {cause.category && (
                       <span className="rounded-full bg-pink-50 px-2.5 py-0.5 text-xs font-bold text-pink-500">
@@ -277,32 +297,52 @@ export const AdminCausesPage: React.FC = () => {
             />
           </Field>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <Field label="Category">
-              <select
-                value={form.category}
-                onChange={(e) => updateForm("category", e.target.value)}
-                className="input-admin"
-              >
-                <option value="">Select category</option>
-                {CAUSE_CATEGORIES.map((cat) => (
-                  <option key={cat.slug} value={cat.slug}>
-                    {cat.icon} {cat.label}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Donation Amount (per unit)">
-              <input
-                type="number"
-                min="0"
-                inputMode="decimal"
-                value={form.target_amount}
-                onChange={(e) => updateForm("target_amount", e.target.value)}
-                className="input-admin"
-              />
-            </Field>
-          </div>
+            <div className="grid gap-4 md:grid-cols-3">
+              <Field label="Goal Amount (₹)">
+                <input
+                  type="number"
+                  min="0"
+                  inputMode="decimal"
+                  value={form.target_amount}
+                  onChange={(e) => updateForm("target_amount", e.target.value)}
+                  className="input-admin"
+                />
+              </Field>
+              <Field label="Raised Amount (₹)">
+                <input
+                  type="number"
+                  min="0"
+                  inputMode="decimal"
+                  value={form.raised_amount}
+                  onChange={(e) => updateForm("raised_amount", e.target.value)}
+                  className="input-admin"
+                />
+              </Field>
+              <Field label="Amount (₹)">
+                <input
+                  type="number"
+                  min="0"
+                  inputMode="decimal"
+                  value={form.unit_amount}
+                  onChange={(e) => updateForm("unit_amount", e.target.value)}
+                  className="input-admin"
+                />
+              </Field>
+              <Field label="Category">
+                <select
+                  value={form.category}
+                  onChange={(e) => updateForm("category", e.target.value)}
+                  className="input-admin"
+                >
+                  <option value="">Select category</option>
+                  {CAUSE_CATEGORIES.map((cat) => (
+                    <option key={cat.slug} value={cat.slug}>
+                      {cat.icon} {cat.label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            </div>
 
           <Field label="Unit Label (e.g. Plate, Paw, Kit, Packet — shown on donation page multiplier)">
             <input

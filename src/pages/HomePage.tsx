@@ -20,10 +20,7 @@ import {
 } from "lucide-react";
 
 import causeAnimals from "@/assets/cause-animals.jpg";
-import causeDisaster from "@/assets/cause-disaster.jpg";
 import causeEducation from "@/assets/cause-education.jpg";
-import causeElderly from "@/assets/cause-elderly.jpg";
-import causeMeal from "@/assets/cause-meal.jpg";
 import heroChild from "@/assets/hero-child.jpg";
 import { CauseCard } from "@/components/Cards";
 import { PublicFooter, PublicHeader } from "@/components/Layout";
@@ -31,6 +28,7 @@ import { LoadingGrid } from "@/components/Loading";
 import { ORG } from "@/constants";
 import { useCauses } from "@/hooks/useCauses";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { usePaymentSettings } from "@/hooks/usePaymentSettings";
 import type { Cause } from "@/lib/api/causes";
 import { CAUSE_CATEGORIES, getCategoryLabel } from "@/lib/api/causeCategories";
 import { defaultSiteContent } from "@/lib/api/siteContent";
@@ -145,19 +143,6 @@ const MeaningfulBirthdaySection: React.FC = () => (
     </div>
   </section>
 );
-
-const FALLBACK_GALLERY = [
-  causeMeal,
-  causeEducation,
-  causeAnimals,
-  heroChild,
-  causeElderly,
-  causeAnimals,
-  causeDisaster,
-  causeMeal,
-  heroChild,
-  causeEducation,
-];
 
 const BLOG_POSTS = [
   {
@@ -391,56 +376,6 @@ const StoryBand: React.FC<{
   </section>
 );
 
-const PictureCarousel: React.FC<{ images: string[] }> = ({ images }) => {
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  const scroll = (direction: "left" | "right") => {
-    scrollRef.current?.scrollBy({ left: direction === "right" ? 310 : -310, behavior: "smooth" });
-  };
-
-  return (
-    <section className="bg-[#fff5f9] px-4 py-12 md:px-6 md:py-16">
-      <div className="mx-auto max-w-[1400px]">
-        <SectionHeader
-          title="Stories of Hope in Pictures"
-          subtitle="Real moments, real people, and visible impact from donation drives."
-        />
-        <div className="relative px-8 md:px-12">
-          <button
-            type="button"
-            onClick={() => scroll("left")}
-            aria-label="Previous gallery image"
-            className="absolute left-0 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white text-brand-dark shadow-[0_2px_10px_rgba(0,0,0,0.16)] hover:bg-brand-primary hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </button>
-          <div
-            ref={scrollRef}
-            className="flex snap-x gap-4 overflow-x-auto scroll-smooth pb-4"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {images.slice(0, 10).map((image, index) => (
-              <div
-                key={`${image}-${index}`}
-                className="aspect-square w-[240px] flex-none snap-start overflow-hidden rounded-lg bg-white shadow-[0_3px_16px_rgba(0,0,0,0.10)] sm:w-[280px]"
-              >
-                <img src={image} alt="" className="h-full w-full object-cover" loading="lazy" />
-              </div>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => scroll("right")}
-            aria-label="Next gallery image"
-            className="absolute right-0 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-white text-brand-dark shadow-[0_2px_10px_rgba(0,0,0,0.16)] hover:bg-brand-primary hover:text-white"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const BlogPreview: React.FC = () => (
   <section className="bg-white px-4 py-12 md:px-6 md:py-16">
     <div className="mx-auto max-w-[1400px]">
@@ -553,6 +488,8 @@ const FaqSection: React.FC = () => (
 export const HomePage: React.FC = () => {
   const { data: siteRecord } = useSiteContent();
   const { data: causes = [], isLoading: causesLoading } = useCauses({ active: true });
+  const { data: paymentSettings = [] } = usePaymentSettings();
+  const activePayment = paymentSettings.find((p) => p.is_active) || paymentSettings[0];
   const content = siteRecord?.content || defaultSiteContent;
   const supportEmail = getSupportEmail(content);
   const heroVideo = content.hero.video || GIVEA_HERO_VIDEO;
@@ -569,13 +506,6 @@ export const HomePage: React.FC = () => {
   }));
   const homeFeaturedText = { ...defaultSiteContent.homeFeatured, ...content.homeFeatured };
   const homeCausesText = { ...defaultSiteContent.homeCauses, ...content.homeCauses };
-
-  const galleryImages = React.useMemo(() => {
-    const uploaded = causes
-      .flatMap((cause) => cause.images || [])
-      .filter((image): image is string => Boolean(image));
-    return uploaded.length > 0 ? Array.from(new Set(uploaded)) : FALLBACK_GALLERY;
-  }, [causes]);
 
   const filteredCauses = React.useMemo(() => {
     return causes.filter((cause) => {
@@ -630,6 +560,30 @@ export const HomePage: React.FC = () => {
           )}
         </div>
       </section>
+
+      {activePayment?.qr_image && (
+        <section className="bg-white px-4 py-10 md:px-6">
+          <div className="mx-auto max-w-[1400px]">
+            <SectionHeader
+              title="Scan & Donate"
+              subtitle="Use any UPI app to scan and donate instantly"
+            />
+            <div className="mx-auto flex max-w-xs flex-col items-center gap-4 rounded-2xl border border-brand-dark/10 bg-brand-bg p-6 shadow-sm">
+              <img
+                src={activePayment.qr_image}
+                alt="Donation QR code"
+                className="h-56 w-56 rounded-xl bg-white object-contain p-2 shadow"
+              />
+              {activePayment.upi_id && (
+                <p className="text-center text-sm font-semibold text-brand-dark/60">
+                  UPI: <span className="font-bold text-brand-dark">{activePayment.upi_id}</span>
+                </p>
+              )}
+              <p className="text-center text-xs text-brand-dark/45">Scan with PhonePe, GPay, Paytm or any UPI app</p>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-white px-4 py-12 md:px-6">
         <div className="mx-auto max-w-[1400px]">
@@ -714,8 +668,6 @@ export const HomePage: React.FC = () => {
       {STORY_BLOCKS.map((block, index) => (
         <StoryBand key={block.title} {...block} reverse={index % 2 === 1} />
       ))}
-
-      <PictureCarousel images={galleryImages} />
 
       <BlogPreview />
 

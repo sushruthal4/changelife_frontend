@@ -27,11 +27,7 @@ const steps = [
     text: "The team completes the drive with local partners and volunteers.",
     icon: ShieldCheck,
   },
-  {
-    title: "Proof shared",
-    text: "Photos and videos are shared after execution through the admin-updated media gallery.",
-    icon: MailCheck,
-  },
+
 ];
 
 export const ImpactPage: React.FC = () => {

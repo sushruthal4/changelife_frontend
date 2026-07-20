@@ -13,13 +13,6 @@ interface CauseCardProps {
   supportEmail?: string;
 }
 
-const formatINR = (amount: number) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(Number(amount || 0));
-
 const buildEmailCauseUrl = (email: string, causeTitle: string) => {
   const subject = encodeURIComponent(`Donation enquiry: ${causeTitle}`);
   const body = encodeURIComponent(`Hi, I want to know more about donating for "${causeTitle}".`);
@@ -34,7 +27,6 @@ export const CauseCard: React.FC<CauseCardProps> = ({
   supportEmail,
 }) => {
   const image = getCauseImage(cause);
-  const donationAmount = Number(cause.target_amount || 0);
   const email = supportEmail || ORG.supportEmail;
 
   return (
@@ -77,9 +69,6 @@ export const CauseCard: React.FC<CauseCardProps> = ({
           </h3>
         </Link>
         <div className='mt-2'>
-          <p className='break-words text-[13px] font-extrabold leading-none text-brand-dark sm:text-base'>
-            {donationAmount > 0 ? formatINR(donationAmount) : "Donate any amount"}
-          </p>
           {!isAdmin && (
             <Link
               to='/causes/$id'
