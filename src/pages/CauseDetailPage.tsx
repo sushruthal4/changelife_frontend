@@ -3,7 +3,6 @@ import { Link, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Banknote,
-  Copy,
   Loader2,
   QrCode,
   ShieldCheck,
@@ -38,8 +37,7 @@ const multipliers = [1, 5, 10, 50, 100];
 export const CauseDetailPage: React.FC = () => {
   const params = useParams({ strict: false }) as { id?: string };
   const [selectedAmount, setSelectedAmount] = React.useState("");
-  const [multiplier, setMultiplier] = React.useState(1);
-  const [copied, setCopied] = React.useState("");
+  const [multiplier, setMultiplier] = React.useState<number | null>(null);
   const [donorForm, setDonorForm] = React.useState({
     donor_name: "",
     donor_phone: "",
@@ -49,13 +47,6 @@ export const CauseDetailPage: React.FC = () => {
   const { data: paymentSettings = [] } = usePaymentSettings();
   const activePayment = paymentSettings.find((p) => p.is_active) || paymentSettings[0];
   const { addToast } = useToast();
-
-  const copyValue = async (label: string, value?: string | null) => {
-    if (!value) return;
-    await navigator.clipboard?.writeText(value);
-    setCopied(label);
-    window.setTimeout(() => setCopied(""), 1600);
-  };
 
   const updateDonorForm = (key: keyof typeof donorForm, value: string) => {
     setDonorForm((current) => ({ ...current, [key]: value }));
@@ -90,18 +81,14 @@ export const CauseDetailPage: React.FC = () => {
   const raisedAmount = Number(cause.raised_amount || 0);
   const unitAmount = Number(cause.unit_amount || 0);
   const progressPct = amount > 0 ? Math.min(100, Math.round((raisedAmount / amount) * 100)) : 0;
-  const unitPrice = amount > 0 ? amount : 0;
+  const unitPrice = unitAmount > 0 ? unitAmount : 0;
   const unitLabel = cause.unit_label?.trim() || "Unit";
   const payableAmount = normalizeAmount(
-    unitPrice > 0
-      ? unitPrice * multiplier
-      : selectedAmount
-        ? Number(selectedAmount)
-        : 0,
+    selectedAmount ? Number(selectedAmount) : 0,
   );
   const upiId = activePayment?.upi_id?.trim() || ORG.upiId;
   const upiPayeeName = activePayment?.upi_payee_name?.trim() || ORG.payeeName;
-  const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name || upiId);
+  const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name);
 
   const handleDonate = (event: React.FormEvent) => {
     event.preventDefault();
@@ -111,11 +98,11 @@ export const CauseDetailPage: React.FC = () => {
       return;
     }
     if (payableAmount > 100000) {
-      addToast("UPI limit is ₹1,00,000 per transaction. Please split into multiple payments.", "warning");
+      addToast("A single payment cannot exceed ₹1,00,000. Please split it into multiple payments.", "warning");
       return;
     }
     if (!upiId) {
-      addToast("UPI ID is not configured", "warning");
+      addToast("Payment is not configured", "warning");
       return;
     }
 
@@ -127,7 +114,7 @@ export const CauseDetailPage: React.FC = () => {
       transactionRef: `HF-${Date.now()}`,
       note: `Change Life donation for ${cause.title}`,
     });
-    addToast("Opening your UPI app. Complete the payment there.", "info");
+    addToast("Opening your payment app. Complete the payment there.", "info");
     window.setTimeout(() => setOpening(false), 1500);
   };
 
@@ -189,7 +176,10 @@ export const CauseDetailPage: React.FC = () => {
                       <button
                         key={m}
                         type='button'
-                        onClick={() => setMultiplier(m)}
+                        onClick={() => {
+                          setMultiplier(m);
+                          setSelectedAmount(String(unitPrice * m));
+                        }}
                         className={`rounded border px-2 py-2.5 text-center font-bold ${multiplier === m
                           ? "border-brand-warm bg-brand-warm text-white"
                           : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
@@ -201,7 +191,7 @@ export const CauseDetailPage: React.FC = () => {
                     ))}
                   </div>
                   <p className='rounded bg-brand-bg px-3 py-2 text-xs font-bold text-brand-dark'>
-                    {multiplier} {unitLabel} × {formatINR(unitPrice)} = <span className='text-brand-primary'>{formatINR(unitPrice * multiplier)}</span>
+                    {multiplier || 1} {unitLabel} × {formatINR(unitPrice)} = <span className='text-brand-primary'>{formatINR(unitPrice * (multiplier || 1))}</span>
                   </p>
                 </div>
               )}
@@ -215,8 +205,11 @@ export const CauseDetailPage: React.FC = () => {
                     <button
                       key={amt}
                       type='button'
-                      onClick={() => setSelectedAmount(selectedAmount === String(amt) ? "" : String(amt))}
-                      className={`rounded border px-3 py-2 text-sm font-bold ${selectedAmount === String(amt)
+                      onClick={() => {
+                        setMultiplier(null);
+                        setSelectedAmount(String(amt));
+                      }}
+                      className={`rounded border px-3 py-2 text-sm font-bold ${selectedAmount === String(amt) && multiplier === null
                         ? "border-brand-warm bg-brand-warm text-white"
                         : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
                         }`}
@@ -230,7 +223,10 @@ export const CauseDetailPage: React.FC = () => {
                   min='1'
                   inputMode='decimal'
                   value={selectedAmount}
-                  onChange={(e) => setSelectedAmount(e.target.value)}
+                  onChange={(e) => {
+                    setMultiplier(null);
+                    setSelectedAmount(e.target.value);
+                  }}
                   className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-base font-bold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
                   placeholder='Custom amount'
                 />
@@ -275,7 +271,7 @@ export const CauseDetailPage: React.FC = () => {
                 ) : (
                   <QrCode className='h-5 w-5 mr-2' />
                 )}
-                {opening ? "Opening UPI App..." : "Pay With UPI"}
+                {opening ? "Opening payment app..." : "Donate Now"}
               </button>
             </form>
 
@@ -285,14 +281,6 @@ export const CauseDetailPage: React.FC = () => {
                   <Banknote className='h-4 w-4 text-pink-500' />
                   Donation Methods
                 </h3>
-
-                {upiId && (
-                  <div className='rounded border border-brand-dark/10 p-4 text-sm text-brand-dark/70'>
-                    <p className='font-semibold text-brand-dark'>UPI</p>
-                    <PaymentRow label='UPI ID' value={upiId} onCopy={copyValue} />
-                    <PaymentRow label='Payee' value={upiPayeeName} onCopy={copyValue} />
-                  </div>
-                )}
 
                 {activePayment?.qr_image && (
                   <div className='rounded bg-brand-muted p-4 text-sm'>
@@ -311,15 +299,14 @@ export const CauseDetailPage: React.FC = () => {
                 {activePayment?.bank_name && (
                   <div className='rounded border border-brand-dark/10 p-4 text-sm text-brand-dark/70'>
                     <p className='font-semibold text-brand-dark'>Bank Transfer</p>
-                    <PaymentRow label='Bank' value={activePayment.bank_name} onCopy={copyValue} />
-                    <PaymentRow label='Account Name' value={activePayment.account_name} onCopy={copyValue} />
-                    <PaymentRow label='Account Number' value={activePayment.account_number} onCopy={copyValue} />
-                    <PaymentRow label='IFSC' value={activePayment.ifsc_code} onCopy={copyValue} />
-                    <PaymentRow label='Branch' value={activePayment.branch_name} onCopy={copyValue} />
+                    <PaymentRow label='Bank' value={activePayment.bank_name} />
+                    <PaymentRow label='Account Name' value={activePayment.account_name} />
+                    <PaymentRow label='Account Number' value={activePayment.account_number} />
+                    <PaymentRow label='IFSC' value={activePayment.ifsc_code} />
+                    <PaymentRow label='Branch' value={activePayment.branch_name} />
                   </div>
                 )}
 
-                {copied && <p className='text-center text-xs font-bold text-brand-success'>{copied} copied</p>}
               </div>
             )}
           </aside>
@@ -334,21 +321,15 @@ export const CauseDetailPage: React.FC = () => {
 const PaymentRow: React.FC<{
   label: string;
   value?: string | null;
-  onCopy: (label: string, value?: string | null) => void;
-}> = ({ label, value, onCopy }) => {
+}> = ({ label, value }) => {
   if (!value) return null;
 
   return (
-    <button
-      type='button'
-      onClick={() => onCopy(label, value)}
-      className='mt-2 flex w-full items-center justify-between gap-3 rounded bg-brand-bg px-3 py-2 text-left hover:bg-brand-muted'
-    >
+    <div className='mt-2 flex w-full items-center justify-between gap-3 rounded bg-brand-bg px-3 py-2 text-left'>
       <span>
         <span className='block text-xs font-semibold text-brand-dark/45'>{label}</span>
         <span className='break-all font-semibold text-brand-dark'>{value}</span>
       </span>
-      <Copy className='h-4 w-4 flex-none text-pink-500' />
-    </button>
+    </div>
   );
 };
