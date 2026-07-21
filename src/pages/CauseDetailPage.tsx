@@ -7,7 +7,6 @@ import {
   Loader2,
   QrCode,
   ShieldCheck,
-  Target,
 } from "lucide-react";
 import { ImageGallery, VideoGallery } from "@/components/Cards";
 import { ErrorMessage } from "@/components/Error";
@@ -97,8 +96,8 @@ export const CauseDetailPage: React.FC = () => {
     unitPrice > 0
       ? unitPrice * multiplier
       : selectedAmount
-      ? Number(selectedAmount)
-      : 0,
+        ? Number(selectedAmount)
+        : 0,
   );
   const upiId = activePayment?.upi_id?.trim() || ORG.upiId;
   const upiPayeeName = activePayment?.upi_payee_name?.trim() || ORG.payeeName;
@@ -159,6 +158,11 @@ export const CauseDetailPage: React.FC = () => {
                   <h1 className='max-w-full break-all text-2xl font-bold leading-tight text-brand-dark [overflow-wrap:anywhere] sm:break-words sm:text-3xl'>
                     {cause.title}
                   </h1>
+                  {cause.full_description && (
+                    <p className='mt-3 whitespace-pre-line break-words leading-7 text-brand-dark/70 [overflow-wrap:anywhere]'>
+                      {cause.full_description}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -194,13 +198,6 @@ export const CauseDetailPage: React.FC = () => {
                 </div>
               )}
 
-              <div className='mt-8'>
-                <h2 className='text-xl font-bold text-brand-dark'>About This Cause</h2>
-                <p className='mt-3 whitespace-pre-line break-all leading-7 text-brand-dark/70 [overflow-wrap:anywhere] sm:break-words'>
-                  {cause.full_description || "No full description added yet."}
-                </p>
-              </div>
-
               <div className='mt-8 rounded border border-brand-dark/10 bg-brand-bg p-4 text-sm text-brand-dark/65'>
                 <p className='font-bold text-brand-dark'>Uploaded media</p>
                 <p className='mt-1'>
@@ -231,11 +228,10 @@ export const CauseDetailPage: React.FC = () => {
                         key={m}
                         type='button'
                         onClick={() => setMultiplier(m)}
-                        className={`rounded border px-2 py-2.5 text-center font-bold ${
-                          multiplier === m
-                            ? "border-brand-warm bg-brand-warm text-white"
-                            : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
-                        }`}
+                        className={`rounded border px-2 py-2.5 text-center font-bold ${multiplier === m
+                          ? "border-brand-warm bg-brand-warm text-white"
+                          : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
+                          }`}
                       >
                         <span className='block text-sm font-extrabold leading-tight'>{m}</span>
                         <span className='block text-[10px] font-semibold leading-tight opacity-80'>{unitLabel}</span>
@@ -258,11 +254,10 @@ export const CauseDetailPage: React.FC = () => {
                       key={amt}
                       type='button'
                       onClick={() => setSelectedAmount(selectedAmount === String(amt) ? "" : String(amt))}
-                      className={`rounded border px-3 py-2 text-sm font-bold ${
-                        selectedAmount === String(amt)
-                          ? "border-brand-warm bg-brand-warm text-white"
-                          : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
-                      }`}
+                      className={`rounded border px-3 py-2 text-sm font-bold ${selectedAmount === String(amt)
+                        ? "border-brand-warm bg-brand-warm text-white"
+                        : "border-brand-dark/10 bg-white text-brand-dark hover:border-brand-warm hover:text-brand-warm"
+                        }`}
                     >
                       ₹{amt}
                     </button>
@@ -311,7 +306,7 @@ export const CauseDetailPage: React.FC = () => {
               <button
                 type='submit'
                 disabled={opening}
-                className='inline-flex w-full items-center justify-center gap-2 rounded bg-brand-warm px-4 py-3 text-sm font-bold text-white hover:bg-brand-primary disabled:cursor-not-allowed disabled:opacity-70'
+                className='inline-flex w-full animate-pulse items-center justify-center gap-2 rounded bg-brand-warm px-4 py-3 text-sm font-bold text-white hover:bg-brand-primary hover:[animation-play-state:paused] disabled:cursor-not-allowed disabled:opacity-70'
               >
                 {opening ? (
                   <Loader2 className='h-4 w-4 animate-spin' />

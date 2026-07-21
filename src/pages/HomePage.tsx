@@ -101,7 +101,7 @@ const MeaningfulBirthdaySection: React.FC = () => (
     <div className="mx-auto max-w-[1400px] space-y-16">
       <div className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
         <div className="overflow-hidden rounded-lg">
-          <img src={TREE_IMAGE} alt="" className="aspect-[4/3] h-full w-full object-cover" loading="lazy" />
+          <img src={TREE_IMAGE} alt="" className="aspect-[4/2] h-full w-full object-cover" loading="lazy" />
         </div>
         <div>
           <h2 className="text-[30px] font-bold leading-tight text-[#ffd1e3] md:text-[40px]">
@@ -111,10 +111,10 @@ const MeaningfulBirthdaySection: React.FC = () => (
             Join a community of people who turn compassion into action through verified drives, volunteer support, and clear donor updates.
           </p>
           <Link
-            to="/contact"
+            to="/causes"
             className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#ffd1e3] px-8 py-3 text-sm font-bold text-white transition hover:bg-[#ffd1e3] hover:text-[#8f174d]"
           >
-            Contact Us
+            Donate Now
           </Link>
         </div>
       </div>
@@ -389,10 +389,10 @@ const BlogPreview: React.FC = () => (
             <img src={post.image} alt="" className="aspect-[16/10] w-full object-cover" loading="lazy" />
             <div className="p-5">
               <p className="text-xs font-semibold text-brand-dark/45">{post.date}</p>
-              <h3 className="mt-2 line-clamp-2 min-h-[3.5rem] text-lg font-bold leading-tight text-brand-dark">
+              <h3 className="mt-2 text-lg font-bold leading-tight text-brand-dark">
                 {post.title}
               </h3>
-              <p className="mt-3 line-clamp-2 text-sm leading-6 text-brand-dark/60">{post.excerpt}</p>
+              <p className="mt-3 text-sm leading-6 text-brand-dark/60">{post.excerpt}</p>
             </div>
           </article>
         ))}

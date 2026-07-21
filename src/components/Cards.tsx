@@ -13,6 +13,13 @@ interface CauseCardProps {
   supportEmail?: string;
 }
 
+const formatINR = (amount: number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(amount || 0));
+
 const buildEmailCauseUrl = (email: string, causeTitle: string) => {
   const subject = encodeURIComponent(`Donation enquiry: ${causeTitle}`);
   const body = encodeURIComponent(`Hi, I want to know more about donating for "${causeTitle}".`);
@@ -28,6 +35,9 @@ export const CauseCard: React.FC<CauseCardProps> = ({
 }) => {
   const image = getCauseImage(cause);
   const email = supportEmail || ORG.supportEmail;
+  const targetAmount = Number(cause.target_amount || 0);
+  const raisedAmount = Number(cause.raised_amount || 0);
+  const progressPct = targetAmount > 0 ? Math.min(100, Math.round((raisedAmount / targetAmount) * 100)) : 0;
 
   return (
     <article className='group flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.15)]'>
@@ -68,12 +78,34 @@ export const CauseCard: React.FC<CauseCardProps> = ({
             {cause.title}
           </h3>
         </Link>
+
+        {cause.full_description && (
+          <p className='mt-1.5 line-clamp-3 break-words text-[11px] leading-[1.5] text-brand-dark/60 [overflow-wrap:anywhere] sm:text-xs'>
+            {cause.full_description}
+          </p>
+        )}
+
+        {targetAmount > 0 && (
+          <div className='mt-2'>
+            <div className='h-1.5 w-full overflow-hidden rounded-full bg-brand-dark/10'>
+              <div
+                className='h-full rounded-full bg-brand-primary transition-all duration-700'
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <div className='mt-1 flex items-center justify-between text-[13px] font-extrabold text-brand-dark sm:text-base'>
+              <span className='text-brand-dark'>{formatINR(raisedAmount)} raised</span>
+              <span className='text-brand-dark'>Goal: {formatINR(targetAmount)}</span>
+            </div>
+          </div>
+        )}
+
         <div className='mt-2'>
           {!isAdmin && (
             <Link
               to='/causes/$id'
               params={{ id: cause.id }}
-              className='mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-brand-primary px-2.5 py-2.5 text-[11px] font-extrabold text-white transition hover:bg-[#d9467a] sm:gap-2 sm:px-4 sm:py-3 sm:text-sm'
+              className='mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md bg-brand-primary px-2.5 py-2.5 text-[11px] font-extrabold text-white animate-pulse transition hover:bg-[#d9467a] hover:[animation-play-state:paused] sm:gap-2 sm:px-4 sm:py-3 sm:text-sm'
             >
               Donate Now
               <ArrowRight className='h-3.5 w-3.5 sm:h-4 sm:w-4' />

@@ -1,6 +1,6 @@
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, Phone, Send } from "lucide-react";
+import { Mail, Send } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -40,7 +40,6 @@ const buildMailtoUrl = (email: string, data: ContactFormData) => {
 export const ContactPage: React.FC = () => {
   const { data: siteRecord } = useSiteContent();
   const content = siteRecord?.content || defaultSiteContent;
-  const supportPhone = content.supportPhone || ORG.supportPhone;
   const supportEmail = content.supportEmail || ORG.supportEmail;
 
   const {
@@ -79,12 +78,6 @@ export const ContactPage: React.FC = () => {
             <h2 className="text-[28px] font-semibold text-brand-primary md:text-[32px]">Contact Our Team</h2>
 
             <div className="mt-6 space-y-5">
-              <ContactInfoCard
-                icon={<Phone className="h-6 w-6" />}
-                title="Phone"
-                value={supportPhone}
-                href={`tel:${supportPhone}`}
-              />
               <ContactInfoCard
                 icon={<Mail className="h-6 w-6" />}
                 title="Email"

@@ -114,12 +114,12 @@ export const ImpactPage: React.FC = () => {
 
       <section className='mx-auto grid max-w-7xl gap-8 px-4 py-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center'>
         <div>
-          <p className='text-sm font-bold uppercase text-brand-warm'>Photo And Video Updates</p>
+          {/* <p className='text-sm font-bold uppercase text-brand-warm'>Photo And Video Updates</p>
           <h2 className='mt-2 text-3xl font-bold text-brand-dark'>Impact proof belongs on every cause</h2>
           <p className='mt-4 leading-7 text-brand-dark/70'>
             Upload cause gallery images and videos from the admin panel. The public detail page will automatically show
             them as proof for donors.
-          </p>
+          </p> */}
           <Link
             to='/causes'
             className='mt-7 inline-flex items-center gap-2 rounded bg-brand-primary px-5 py-3 text-sm font-bold text-white hover:bg-brand-warm'

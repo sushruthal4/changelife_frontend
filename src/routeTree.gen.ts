@@ -9,28 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ImpactRouteImport } from './routes/impact'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ImpactRouteImport } from './routes/impact'
+import { Route as AdminCausesRouteImport } from './routes/admin/causes'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminPaymentSettingsRouteImport } from './routes/admin/payment-settings'
+import { Route as AdminSetup2faRouteImport } from './routes/admin/setup-2fa'
+import { Route as AdminSiteSettingsRouteImport } from './routes/admin/site-settings'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as CausesIndexRouteImport } from './routes/causes.index'
 import { Route as CausesIdRouteImport } from './routes/causes.$id'
-import { Route as AdminUsersRouteImport } from './routes/admin/users'
-import { Route as AdminSiteSettingsRouteImport } from './routes/admin/site-settings'
-import { Route as AdminSetup2faRouteImport } from './routes/admin/setup-2fa'
-import { Route as AdminPaymentSettingsRouteImport } from './routes/admin/payment-settings'
-import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
-import { Route as AdminCausesRouteImport } from './routes/admin/causes'
 
-const ImpactRoute = ImpactRouteImport.update({
-  id: '/impact',
-  path: '/impact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -38,9 +33,49 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCausesRoute = AdminCausesRouteImport.update({
+  id: '/admin/causes',
+  path: '/admin/causes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPaymentSettingsRoute = AdminPaymentSettingsRouteImport.update({
+  id: '/admin/payment-settings',
+  path: '/admin/payment-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSetup2faRoute = AdminSetup2faRouteImport.update({
+  id: '/admin/setup-2fa',
+  path: '/admin/setup-2fa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSiteSettingsRoute = AdminSiteSettingsRouteImport.update({
+  id: '/admin/site-settings',
+  path: '/admin/site-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CausesIndexRoute = CausesIndexRouteImport.update({
@@ -51,41 +86,6 @@ const CausesIndexRoute = CausesIndexRouteImport.update({
 const CausesIdRoute = CausesIdRouteImport.update({
   id: '/causes/$id',
   path: '/causes/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/admin/users',
-  path: '/admin/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminSiteSettingsRoute = AdminSiteSettingsRouteImport.update({
-  id: '/admin/site-settings',
-  path: '/admin/site-settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminSetup2faRoute = AdminSetup2faRouteImport.update({
-  id: '/admin/setup-2fa',
-  path: '/admin/setup-2fa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminPaymentSettingsRoute = AdminPaymentSettingsRouteImport.update({
-  id: '/admin/payment-settings',
-  path: '/admin/payment-settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminCausesRoute = AdminCausesRouteImport.update({
-  id: '/admin/causes',
-  path: '/admin/causes',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -201,18 +201,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/impact': {
-      id: '/impact'
-      path: '/impact'
-      fullPath: '/impact'
-      preLoaderRoute: typeof ImpactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -222,11 +215,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/impact': {
+      id: '/impact'
+      path: '/impact'
+      fullPath: '/impact'
+      preLoaderRoute: typeof ImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/causes': {
+      id: '/admin/causes'
+      path: '/admin/causes'
+      fullPath: '/admin/causes'
+      preLoaderRoute: typeof AdminCausesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/payment-settings': {
+      id: '/admin/payment-settings'
+      path: '/admin/payment-settings'
+      fullPath: '/admin/payment-settings'
+      preLoaderRoute: typeof AdminPaymentSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/setup-2fa': {
+      id: '/admin/setup-2fa'
+      path: '/admin/setup-2fa'
+      fullPath: '/admin/setup-2fa'
+      preLoaderRoute: typeof AdminSetup2faRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/site-settings': {
+      id: '/admin/site-settings'
+      path: '/admin/site-settings'
+      fullPath: '/admin/site-settings'
+      preLoaderRoute: typeof AdminSiteSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/causes/': {
@@ -241,55 +290,6 @@ declare module '@tanstack/react-router' {
       path: '/causes/$id'
       fullPath: '/causes/$id'
       preLoaderRoute: typeof CausesIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/admin/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/site-settings': {
-      id: '/admin/site-settings'
-      path: '/admin/site-settings'
-      fullPath: '/admin/site-settings'
-      preLoaderRoute: typeof AdminSiteSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/setup-2fa': {
-      id: '/admin/setup-2fa'
-      path: '/admin/setup-2fa'
-      fullPath: '/admin/setup-2fa'
-      preLoaderRoute: typeof AdminSetup2faRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/payment-settings': {
-      id: '/admin/payment-settings'
-      path: '/admin/payment-settings'
-      fullPath: '/admin/payment-settings'
-      preLoaderRoute: typeof AdminPaymentSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/admin/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/causes': {
-      id: '/admin/causes'
-      path: '/admin/causes'
-      fullPath: '/admin/causes'
-      preLoaderRoute: typeof AdminCausesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -164,7 +164,7 @@ export const defaultSiteContent: SiteContentData = {
       "Support verified causes, donate directly, and see the real people your kindness reaches.",
   },
   about: {
-    title: "Giving with proof, care, and accountability",
+    title: "Giving with care, and accountability",
     description:
       "Change Life is a purpose-driven impact platform built to make giving simple, transparent, and meaningful. Every contribution is executed on the ground and documented with real photos, videos, and clear updates.",
     missionTitle: "Our Mission",

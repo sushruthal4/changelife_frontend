@@ -103,7 +103,7 @@ export const AboutPage: React.FC = () => {
               <p className='text-sm font-bold uppercase text-brand-warm'>Your Kindness Can Change Lives</p>
               <h2 className='mt-2 text-3xl font-bold'>Discover causes where your support makes a real difference</h2>
               <p className='mt-3 max-w-3xl text-white/70'>
-                Each campaign is executed on the ground and shared with donors through photos, videos, and clear progress.
+                Each campaign is executed on the ground and shared with donors through clear progress.
               </p>
             </div>
             <Link
