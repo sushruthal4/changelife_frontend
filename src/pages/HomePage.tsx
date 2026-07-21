@@ -112,7 +112,7 @@ const MeaningfulBirthdaySection: React.FC = () => (
           </p>
           <Link
             to="/causes"
-            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#ffd1e3] px-8 py-3 text-sm font-bold text-white transition hover:bg-[#ffd1e3] hover:text-[#8f174d]"
+            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-brand-accent bg-brand-accent px-8 py-3 text-sm font-bold text-white transition hover:bg-brand-accent-light"
           >
             Donate Now
           </Link>
@@ -134,7 +134,7 @@ const MeaningfulBirthdaySection: React.FC = () => (
           </p>
           <Link
             to="/causes"
-            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-[#ffd1e3] px-8 py-3 text-sm font-bold text-white transition hover:bg-[#ffd1e3] hover:text-[#8f174d]"
+            className="mt-7 inline-flex items-center justify-center rounded-full border-2 border-brand-accent bg-brand-accent px-8 py-3 text-sm font-bold text-white transition hover:bg-brand-accent-light"
           >
             Donate Now
           </Link>
@@ -365,8 +365,8 @@ const StoryBand: React.FC<{
         <Link
           to={to}
           className={`mt-7 inline-flex items-center justify-center rounded-full border-2 px-8 py-3 text-sm font-bold transition ${dark
-            ? "border-[#ffd1e3] text-white hover:bg-[#ffd1e3] hover:text-[#8f174d]"
-            : "border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white"
+            ? "border-brand-accent bg-brand-accent text-white hover:bg-brand-accent-light"
+            : "border-brand-accent bg-brand-accent text-white hover:bg-brand-accent-light"
             }`}
         >
           {cta}

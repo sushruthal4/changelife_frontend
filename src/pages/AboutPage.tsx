@@ -108,7 +108,7 @@ export const AboutPage: React.FC = () => {
             </div>
             <Link
               to='/causes'
-              className='inline-flex items-center justify-center gap-2 rounded bg-brand-warm px-5 py-3 text-sm font-bold text-white hover:bg-brand-primary'
+              className='inline-flex items-center justify-center gap-2 rounded bg-brand-accent px-5 py-3 text-sm font-bold text-white hover:bg-brand-accent-light'
             >
               Donate Now
               <ArrowRight className='h-4 w-4' />

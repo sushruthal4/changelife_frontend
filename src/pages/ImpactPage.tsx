@@ -122,7 +122,7 @@ export const ImpactPage: React.FC = () => {
           </p> */}
           <Link
             to='/causes'
-            className='mt-7 inline-flex items-center gap-2 rounded bg-brand-primary px-5 py-3 text-sm font-bold text-white hover:bg-brand-warm'
+            className='mt-7 inline-flex items-center gap-2 rounded bg-brand-accent px-5 py-3 text-sm font-bold text-white hover:bg-brand-accent-light'
           >
             Donate To A Cause
             <ArrowRight className='h-4 w-4' />

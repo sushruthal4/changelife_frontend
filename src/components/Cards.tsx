@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Heart, ImageOff, Mail } from "lucide-react";
+import { Heart, ImageOff, Mail } from "lucide-react";
 import { Cause } from "@/lib/api/causes";
 import { getCauseImage } from "@/lib/fallbackMedia";
 import { ORG } from "@/constants";
@@ -94,8 +94,8 @@ export const CauseCard: React.FC<CauseCardProps> = ({
               />
             </div>
             <div className='mt-1 flex items-center justify-between text-[13px] font-extrabold text-brand-dark sm:text-base'>
-              <span className='text-brand-dark'>{formatINR(raisedAmount)} raised</span>
-              <span className='text-brand-dark'>Goal: {formatINR(targetAmount)}</span>
+              <span className='text-brand-primary'>{formatINR(raisedAmount)} raised</span>
+              <span className='text-brand-dark/70'>Goal: {formatINR(targetAmount)}</span>
             </div>
           </div>
         )}
@@ -105,10 +105,10 @@ export const CauseCard: React.FC<CauseCardProps> = ({
             <Link
               to='/causes/$id'
               params={{ id: cause.id }}
-              className='mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-brand-primary px-2.5 py-3 text-[12px] font-bold text-white animate-pulse transition hover:bg-[#d9467a] hover:[animation-play-state:paused] sm:gap-2 sm:px-4 sm:py-3 sm:text-sm'
+              className='mt-3 flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float'
             >
+              <Heart className='h-5 w-5 mr-2' />
               Donate Now
-              <ArrowRight className='h-3.5 w-3.5 sm:h-4 sm:w-4' />
             </Link>
           )}
         </div>

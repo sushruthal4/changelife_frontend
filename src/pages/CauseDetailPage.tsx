@@ -268,12 +268,12 @@ export const CauseDetailPage: React.FC = () => {
               <button
                 type='submit'
                 disabled={opening}
-                className='inline-flex w-full animate-pulse items-center justify-center gap-2 rounded bg-brand-warm px-4 py-3 text-sm font-bold text-white hover:bg-brand-primary hover:[animation-play-state:paused] disabled:cursor-not-allowed disabled:opacity-70'
+                className='flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float disabled:cursor-not-allowed disabled:opacity-70'
               >
                 {opening ? (
-                  <Loader2 className='h-4 w-4 animate-spin' />
+                  <Loader2 className='h-5 w-5 mr-2 animate-spin' />
                 ) : (
-                  <QrCode className='h-4 w-4 text-pink-100' />
+                  <QrCode className='h-5 w-5 mr-2' />
                 )}
                 {opening ? "Opening UPI App..." : "Pay With UPI"}
               </button>

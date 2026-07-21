@@ -80,7 +80,7 @@ export const PublicHeader: React.FC = () => {
           ))}
           <Link
             to='/causes'
-            className='inline-flex items-center justify-center rounded-md bg-brand-primary px-5 py-2.5 text-sm font-bold text-white shadow-[0_6px_14px_rgba(238,102,147,0.22)] transition hover:bg-[#d9467a]'
+            className='inline-flex items-center justify-center rounded-md bg-brand-accent px-5 py-2.5 text-sm font-bold text-white shadow-[0_6px_14px_rgba(238,102,147,0.22)] transition hover:bg-brand-accent-light'
           >
             Donate Now
           </Link>
@@ -113,7 +113,7 @@ export const PublicHeader: React.FC = () => {
             ))}
             <Link
               to='/causes'
-              className='mt-2 inline-flex w-full items-center justify-center rounded-md bg-brand-primary px-4 py-3 text-sm font-bold text-white'
+              className='mt-2 inline-flex w-full items-center justify-center rounded-md bg-brand-accent px-4 py-3 text-sm font-bold text-white hover:bg-brand-accent-light'
               onClick={() => setMobileMenuOpen(false)}
             >
               Donate Now
