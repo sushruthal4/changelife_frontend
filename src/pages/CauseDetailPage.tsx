@@ -242,7 +242,7 @@ export const CauseDetailPage: React.FC = () => {
               <div className='space-y-3 rounded border border-brand-dark/10 bg-brand-bg p-4'>
                 <h3 className='flex items-center gap-2 font-bold text-brand-dark'>
                   <ShieldCheck className='h-4 w-4 text-pink-500' />
-                  Donor Details
+                  Donor Details (optional)
                 </h3>
                 <input
                   value={donorForm.donor_name}
@@ -256,10 +256,12 @@ export const CauseDetailPage: React.FC = () => {
                   value={donorForm.donor_phone}
                   onChange={(e) => updateDonorForm("donor_phone", e.target.value)}
                   className='w-full rounded border border-brand-dark/15 bg-white px-3 py-3 text-sm font-semibold text-brand-dark outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15'
-                  placeholder='Phone number'
+                  placeholder='Phone number (optional)'
                   autoComplete='tel'
                 />
               </div>
+              <p>or</p>
+              <p> Pay as unknow person</p>
 
               <button
                 type='submit'

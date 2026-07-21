@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Camera, CheckCircle2, Heart, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Camera, CheckCircle2, Heart, LockKeyhole, MailCheck, ShieldCheck, Sparkles } from "lucide-react";
 import causeEducation from "@/assets/cause-education.jpg";
 import { CauseCard } from "@/components/Cards";
 import { PublicFooter, PublicHeader } from "@/components/Layout";
@@ -109,6 +109,15 @@ export const ImpactPage: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className='mx-auto max-w-7xl px-4 pb-2'>
+        <div className='flex items-center gap-3 rounded-lg border border-brand-accent/20 bg-brand-accent/8 px-5 py-4'>
+          <span className='flex h-10 w-10 flex-none items-center justify-center rounded-full bg-brand-accent text-white'>
+            <LockKeyhole className='h-5 w-5' />
+          </span>
+          <h2 className='text-lg font-bold text-brand-dark'>Secure Donations</h2>
         </div>
       </section>
 

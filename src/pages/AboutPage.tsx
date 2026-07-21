@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, BadgeCheck, HeartHandshake, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, BadgeCheck, HeartHandshake, LockKeyhole, ShieldCheck, Users } from "lucide-react";
 import heroChild from "@/assets/hero-child.jpg";
 import { PublicFooter, PublicHeader } from "@/components/Layout";
 import { LoadingCard } from "@/components/Loading";
@@ -93,6 +93,15 @@ export const AboutPage: React.FC = () => {
             <h2 className='text-2xl font-bold text-brand-dark'>{content.about?.visionTitle || "Our Vision"}</h2>
             <p className='mt-3 leading-7 text-brand-dark/70'>{content.about?.vision}</p>
           </div>
+        </div>
+      </section>
+
+      <section className='mx-auto max-w-7xl px-4 pb-2'>
+        <div className='flex items-center gap-3 rounded-lg border border-brand-accent/20 bg-brand-accent/8 px-5 py-4'>
+          <span className='flex h-10 w-10 flex-none items-center justify-center rounded-full bg-brand-accent text-white'>
+            <LockKeyhole className='h-5 w-5' />
+          </span>
+          <h2 className='text-lg font-bold text-brand-dark'>Secure Donations</h2>
         </div>
       </section>
 
