@@ -166,45 +166,7 @@ export const CauseDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Progress bar */}
-              {amount > 0 && (
-                <div className='mb-6 rounded-lg border border-brand-dark/10 bg-brand-bg p-4'>
-                  <div className='mb-2 flex items-center justify-between text-sm font-semibold'>
-                    <span className='text-brand-dark'>Raised</span>
-                    <span className='text-brand-primary'>{progressPct}%</span>
-                  </div>
-                  <div className='h-3 w-full overflow-hidden rounded-full bg-brand-dark/10'>
-                    <div
-                      className='h-full rounded-full bg-brand-primary transition-all duration-700'
-                      style={{ width: `${progressPct}%` }}
-                    />
-                  </div>
-                  <div className='mt-2 flex items-center justify-between text-xs font-semibold text-brand-dark/60'>
-                    <span>{formatINR(raisedAmount)} raised</span>
-                    <span>Goal: {formatINR(amount)}</span>
-                  </div>
-                  {unitAmount > 0 && (
-                    <div className='mt-2 border-t border-brand-dark/10 pt-2 text-xs font-semibold text-brand-dark/50'>
-                      Amount: {formatINR(unitAmount)}
-                    </div>
-                  )}
-                </div>
-              )}
 
-              {amount > 0 && (
-                <div className='mb-6 flex items-center gap-2 text-sm text-brand-dark/70'>
-                  <Target className='h-4 w-4 flex-none text-pink-500' />
-                  <span>{formatINR(amount)} goal amount</span>
-                </div>
-              )}
-
-              <div className='mt-8 rounded border border-brand-dark/10 bg-brand-bg p-4 text-sm text-brand-dark/65'>
-                <p className='font-bold text-brand-dark'>Uploaded media</p>
-                <p className='mt-1'>
-                  {mediaImages.length} image{mediaImages.length === 1 ? "" : "s"} and {cause.videos?.length || 0} video
-                  {(cause.videos?.length || 0) === 1 ? "" : "s"} are attached to this cause.
-                </p>
-              </div>
 
               {cause.videos?.length > 0 && (
                 <div className='mt-8'>
