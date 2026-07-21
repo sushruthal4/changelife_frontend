@@ -17,7 +17,6 @@ import { useCauseById } from "@/hooks/useCauses";
 import { usePaymentSettings } from "@/hooks/usePaymentSettings";
 import { getCauseGallery } from "@/lib/fallbackMedia";
 import { openUpiDeepLink } from "@/lib/upi";
-import { ORG } from "@/constants";
 
 const formatINR = (amount: number) =>
   new Intl.NumberFormat("en-IN", {
@@ -86,8 +85,8 @@ export const CauseDetailPage: React.FC = () => {
   const payableAmount = normalizeAmount(
     selectedAmount ? Number(selectedAmount) : 0,
   );
-  const upiId = activePayment?.upi_id?.trim() || ORG.upiId;
-  const upiPayeeName = activePayment?.upi_payee_name?.trim() || ORG.payeeName;
+  const upiId = activePayment?.upi_id?.trim() || "";
+  const upiPayeeName = activePayment?.upi_payee_name?.trim() || "Change Life";
   const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name);
 
   const handleDonate = (event: React.FormEvent) => {
@@ -263,18 +262,24 @@ export const CauseDetailPage: React.FC = () => {
               <p>or</p>
               <p> Pay as unknow person</p>
 
-              <button
-                type='submit'
-                disabled={opening}
-                className='flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float disabled:cursor-not-allowed disabled:opacity-70'
-              >
-                {opening ? (
-                  <Loader2 className='h-5 w-5 mr-2 animate-spin' />
-                ) : (
-                  <QrCode className='h-5 w-5 mr-2' />
-                )}
-                {opening ? "Opening payment app..." : "Donate Now"}
-              </button>
+              {upiId ? (
+                <button
+                  type='submit'
+                  disabled={opening}
+                  className='flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float disabled:cursor-not-allowed disabled:opacity-70'
+                >
+                  {opening ? (
+                    <Loader2 className='h-5 w-5 mr-2 animate-spin' />
+                  ) : (
+                    <QrCode className='h-5 w-5 mr-2' />
+                  )}
+                  {opening ? "Opening payment app..." : "Donate Now"}
+                </button>
+              ) : (
+                <p className='rounded border border-brand-accent/20 bg-brand-accent/8 px-4 py-3 text-center text-sm font-semibold text-brand-dark/70'>
+                  Online payment is not configured. Please use the available QR or bank-transfer details below.
+                </p>
+              )}
             </form>
 
             {hasBackupPayment && (
