@@ -580,11 +580,11 @@ export const HomePage: React.FC = () => {
                 alt="Donation QR code"
                 className="h-56 w-56 rounded-xl bg-white object-contain p-2 shadow"
               />
-              {activePayment.upi_id && (
+              {/* {activePayment.upi_id && (
                 <p className="text-center text-sm font-semibold text-brand-dark/60">
                   UPI: <span className="font-bold text-brand-dark">{activePayment.upi_id}</span>
                 </p>
-              )}
+              )} */}
               <p className="text-center text-xs text-brand-dark/45">Scan with PhonePe, GPay, Paytm or any UPI app</p>
             </div>
           </div>
