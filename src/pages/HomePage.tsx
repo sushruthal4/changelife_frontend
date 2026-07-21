@@ -497,8 +497,12 @@ export const HomePage: React.FC = () => {
   const [activeCategory, setActiveCategory] = React.useState("");
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const featuredCauses = causes.filter((cause) => cause.is_featured).slice(0, 14);
-  const scrollCauses = featuredCauses.length > 0 ? featuredCauses : causes.slice(0, 14);
+  const featuredCauses = React.useMemo(() => {
+    const arr = causes.filter((cause) => cause.is_featured);
+    return [...arr].sort(() => Math.random() - 0.5).slice(0, 14);
+  }, [causes.length]);
+  const allShuffled = React.useMemo(() => [...causes].sort(() => Math.random() - 0.5).slice(0, 14), [causes.length]);
+  const scrollCauses = featuredCauses.length > 0 ? featuredCauses : allShuffled;
   const configuredImpactCards = siteRecord?.content.homeImpact;
   const homeImpactCards = GIVEA_IMPACT_CARDS.map((fallback, index) => ({
     ...fallback,
@@ -507,15 +511,17 @@ export const HomePage: React.FC = () => {
   const homeFeaturedText = { ...defaultSiteContent.homeFeatured, ...content.homeFeatured };
   const homeCausesText = { ...defaultSiteContent.homeCauses, ...content.homeCauses };
 
+  const shuffledCauses = React.useMemo(() => [...causes].sort(() => Math.random() - 0.5), [causes.length]);
+
   const filteredCauses = React.useMemo(() => {
-    return causes.filter((cause) => {
+    return shuffledCauses.filter((cause) => {
       const categoryLabel = cause.category ? getCategoryLabel(cause.category) : "";
       const searchable = `${cause.title} ${cause.category || ""} ${categoryLabel}`.toLowerCase();
       const matchesSearch = !searchTerm || searchable.includes(searchTerm.toLowerCase());
       const matchesCategory = !activeCategory || cause.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [activeCategory, causes, searchTerm]);
+  }, [activeCategory, shuffledCauses, searchTerm]);
 
   return (
     <div className="min-h-screen bg-white text-brand-dark">

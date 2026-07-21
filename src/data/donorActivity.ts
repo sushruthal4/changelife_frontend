@@ -86,18 +86,34 @@ const CAUSES = [
   "Animal Care",
 ] as const;
 
-export const DONOR_ACTIVITY: DonorActivityItem[] = FIRST_NAMES.flatMap((firstName, firstIndex) =>
-  LAST_NAMES.map((lastName, lastIndex) => {
-    const index = firstIndex * LAST_NAMES.length + lastIndex;
+const buildActivity = (): DonorActivityItem[] => {
+  const raw = FIRST_NAMES.flatMap((firstName, firstIndex) =>
+    LAST_NAMES.map((lastName, lastIndex) => {
+      const index = firstIndex * LAST_NAMES.length + lastIndex;
+      return {
+        donorName: `${firstName} ${lastName}`,
+        amount: AMOUNTS[(firstIndex * 7 + lastIndex * 3) % AMOUNTS.length],
+        donatedAt: `${(index % 38) + 2} minutes ago`,
+        cause: CAUSES[index % CAUSES.length],
+      };
+    }),
+  );
 
-    return {
-      donorName: `${firstName} ${lastName}`,
-      amount: AMOUNTS[(firstIndex * 7 + lastIndex * 3) % AMOUNTS.length],
-      donatedAt: `${(index % 38) + 2} minutes ago`,
-      cause: CAUSES[index % CAUSES.length],
-    };
-  }),
-);
+  // Shuffle so no two consecutive entries start with the same letter
+  const shuffled: DonorActivityItem[] = [];
+  const remaining = [...raw];
+  while (remaining.length > 0) {
+    const lastLetter = shuffled.at(-1)?.donorName[0]?.toLowerCase() ?? "";
+    const diffIdx = remaining.findIndex(
+      (item) => item.donorName[0].toLowerCase() !== lastLetter,
+    );
+    const pickIdx = diffIdx === -1 ? 0 : diffIdx;
+    shuffled.push(...remaining.splice(pickIdx, 1));
+  }
+  return shuffled;
+};
+
+export const DONOR_ACTIVITY: DonorActivityItem[] = buildActivity();
 
 export const mergeDonorActivity = (
   configured: Array<Partial<DonorActivityItem>> = [],

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Heart, X } from "lucide-react";
 
 import { DONOR_ACTIVITY, type DonorActivityItem } from "@/data/donorActivity";
@@ -6,24 +6,31 @@ import { DONOR_ACTIVITY, type DonorActivityItem } from "@/data/donorActivity";
 const ROTATION_INTERVAL_MS = 4_000;
 const DISPLAY_DURATION_MS = 2_000;
 const FIRST_POPUP_DELAY_MS = 500;
-const STORAGE_KEY = "heart-fuel-donor-activity-index";
+
+const shuffleOnce = <T,>(arr: T[]): T[] => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
 
 interface DonationActivityToastProps {
   activity?: DonorActivityItem[];
 }
 
 export function DonationActivityToast({ activity = DONOR_ACTIVITY }: DonationActivityToastProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Shuffle once per mount — all names shown before any repeat
+  const shuffled = useMemo(() => shuffleOnce(activity), [activity]);
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    Math.floor(Math.random() * activity.length),
+  );
   const [isVisible, setIsVisible] = useState(false);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (activity.length === 0) return;
-
-    const savedIndex = Number(window.sessionStorage.getItem(STORAGE_KEY));
-    if (Number.isInteger(savedIndex) && savedIndex >= 0) {
-      setCurrentIndex(savedIndex % activity.length);
-    }
+    if (shuffled.length === 0) return;
 
     const hidePopup = () => {
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
@@ -37,11 +44,7 @@ export function DonationActivityToast({ activity = DONOR_ACTIVITY }: DonationAct
 
     const firstPopupTimeout = setTimeout(showPopup, FIRST_POPUP_DELAY_MS);
     const rotationInterval = setInterval(() => {
-      setCurrentIndex((index) => {
-        const nextIndex = (index + 1) % activity.length;
-        window.sessionStorage.setItem(STORAGE_KEY, String(nextIndex));
-        return nextIndex;
-      });
+      setCurrentIndex((index) => (index + 1) % shuffled.length);
       showPopup();
     }, ROTATION_INTERVAL_MS);
 
@@ -50,11 +53,11 @@ export function DonationActivityToast({ activity = DONOR_ACTIVITY }: DonationAct
       clearInterval(rotationInterval);
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     };
-  }, [activity.length]);
+  }, [shuffled.length]);
 
-  if (!isVisible || activity.length === 0) return null;
+  if (!isVisible || shuffled.length === 0) return null;
 
-  const donation = activity[currentIndex % activity.length];
+  const donation = shuffled[currentIndex % shuffled.length];
 
   return (
     <aside

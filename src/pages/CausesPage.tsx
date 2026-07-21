@@ -19,12 +19,13 @@ export const CausesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSlug, setSelectedSlug] = useState("");
   const { data: causes = [], isLoading } = useCauses({ active: true });
+  const shuffledCauses = React.useMemo(() => [...causes].sort(() => Math.random() - 0.5), [causes.length]);
   const { data: siteRecord } = useSiteContent();
   const content = siteRecord?.content || defaultSiteContent;
   const causesPageText = { ...defaultSiteContent.causesPage, ...content.causesPage };
   const supportEmail = content.supportEmail || ORG.supportEmail;
 
-  const filteredCauses = causes.filter((cause) => {
+  const filteredCauses = shuffledCauses.filter((cause) => {
     const categoryLabel = cause.category ? getCategoryLabel(cause.category) : "";
     const searchable = `${cause.title} ${cause.category || ""} ${categoryLabel}`.toLowerCase();
     const matchesSearch = !searchTerm || searchable.includes(searchTerm.toLowerCase());
