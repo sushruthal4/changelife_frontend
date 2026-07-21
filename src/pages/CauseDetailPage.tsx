@@ -3,12 +3,12 @@ import { Link, useParams } from "@tanstack/react-router";
 import {
   ArrowLeft,
   Banknote,
-  Loader2,
   QrCode,
   ShieldCheck,
 } from "lucide-react";
 import { ImageGallery, VideoGallery } from "@/components/Cards";
 import { ErrorMessage } from "@/components/Error";
+import { Modal } from "@/components/Forms";
 import { PublicFooter, PublicHeader } from "@/components/Layout";
 import { LoadingSpinner } from "@/components/Loading";
 import { Badge } from "@/components/Stats";
@@ -16,7 +16,6 @@ import { useToast } from "@/contexts/ToastContext";
 import { useCauseById } from "@/hooks/useCauses";
 import { usePaymentSettings } from "@/hooks/usePaymentSettings";
 import { getCauseGallery } from "@/lib/fallbackMedia";
-import { openUpiDeepLink } from "@/lib/upi";
 
 const formatINR = (amount: number) =>
   new Intl.NumberFormat("en-IN", {
@@ -41,7 +40,7 @@ export const CauseDetailPage: React.FC = () => {
     donor_name: "",
     donor_phone: "",
   });
-  const [opening, setOpening] = React.useState(false);
+  const [isQrPaymentOpen, setIsQrPaymentOpen] = React.useState(false);
   const { data: cause, isLoading: causeLoading, error: causeError } = useCauseById(params.id);
   const { data: paymentSettings = [] } = usePaymentSettings();
   const activePayment = paymentSettings.find((p) => p.is_active) || paymentSettings[0];
@@ -85,9 +84,7 @@ export const CauseDetailPage: React.FC = () => {
   const payableAmount = normalizeAmount(
     selectedAmount ? Number(selectedAmount) : 0,
   );
-  const upiId = activePayment?.upi_id?.trim() || "";
-  const upiPayeeName = activePayment?.upi_payee_name?.trim() || "Change Life";
-  const hasBackupPayment = Boolean(activePayment?.qr_image || activePayment?.bank_name);
+  const hasBackupPayment = Boolean(activePayment?.bank_name);
 
   const handleDonate = (event: React.FormEvent) => {
     event.preventDefault();
@@ -96,25 +93,12 @@ export const CauseDetailPage: React.FC = () => {
       addToast("Please enter a donation amount", "warning");
       return;
     }
-    if (payableAmount > 100000) {
-      addToast("A single payment cannot exceed ₹1,00,000. Please split it into multiple payments.", "warning");
-      return;
-    }
-    if (!upiId) {
-      addToast("Payment is not configured", "warning");
+    if (!activePayment?.qr_image) {
+      addToast("A payment QR code has not been configured yet", "warning");
       return;
     }
 
-    setOpening(true);
-    openUpiDeepLink({
-      upiId,
-      payeeName: upiPayeeName,
-      amount: payableAmount,
-      transactionRef: `HF-${Date.now()}`,
-      note: `Change Life donation for ${cause.title}`,
-    });
-    addToast("Opening your payment app. Complete the payment there.", "info");
-    window.setTimeout(() => setOpening(false), 1500);
+    setIsQrPaymentOpen(true);
   };
 
   return (
@@ -262,23 +246,34 @@ export const CauseDetailPage: React.FC = () => {
               <p>or</p>
               <p> Pay as unknow person</p>
 
-              {upiId ? (
-                <button
-                  type='submit'
-                  disabled={opening}
-                  className='flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float disabled:cursor-not-allowed disabled:opacity-70'
-                >
-                  {opening ? (
-                    <Loader2 className='h-5 w-5 mr-2 animate-spin' />
-                  ) : (
-                    <QrCode className='h-5 w-5 mr-2' />
-                  )}
-                  {opening ? "Opening payment app..." : "Donate Now"}
-                </button>
-              ) : (
-                <p className='rounded border border-brand-accent/20 bg-brand-accent/8 px-4 py-3 text-center text-sm font-semibold text-brand-dark/70'>
-                  Online payment is not configured. Please use the available QR or bank-transfer details below.
-                </p>
+              <button
+                type='submit'
+                className='flex w-full items-center justify-center h-12 rounded-xl bg-brand-accent text-white font-bold hover:bg-brand-accent-light transition animate-btn-float'
+              >
+                <QrCode className='h-5 w-5 mr-2' />
+                Donate Now
+              </button>
+
+              {activePayment?.qr_image && (
+                <div className='rounded-xl border border-brand-primary/15 bg-brand-primary/5 p-4 text-center'>
+                  <div className='mb-3 flex items-center justify-center gap-2 font-bold text-brand-dark'>
+                    <QrCode className='h-5 w-5 text-pink-500' />
+                    Scan &amp; donate
+                  </div>
+                  <button
+                    type='button'
+                    onClick={() => setIsQrPaymentOpen(true)}
+                    className='mx-auto block w-full max-w-[19rem] rounded-lg bg-white p-2 shadow-sm transition hover:ring-2 hover:ring-brand-primary/25 focus:outline-none focus:ring-2 focus:ring-brand-primary'
+                    aria-label='Open donation QR code'
+                  >
+                    <img
+                      src={activePayment.qr_image}
+                      alt='Donation payment QR code'
+                      className='aspect-square w-full rounded object-contain'
+                    />
+                  </button>
+                  <p className='mt-3 text-xs text-brand-dark/55'>Tap the QR code to view it larger.</p>
+                </div>
               )}
             </form>
 
@@ -288,20 +283,6 @@ export const CauseDetailPage: React.FC = () => {
                   <Banknote className='h-4 w-4 text-pink-500' />
                   Donation Methods
                 </h3>
-
-                {activePayment?.qr_image && (
-                  <div className='rounded bg-brand-muted p-4 text-sm'>
-                    <div className='mb-3 flex items-center justify-between gap-3'>
-                      <p className='font-semibold text-brand-dark'>QR Image</p>
-                      <QrCode className='h-5 w-5 text-pink-500' />
-                    </div>
-                    <img
-                      src={activePayment.qr_image}
-                      alt='Donation QR code'
-                      className='mx-auto h-44 w-44 rounded bg-white object-contain p-2'
-                    />
-                  </div>
-                )}
 
                 {activePayment?.bank_name && (
                   <div className='rounded border border-brand-dark/10 p-4 text-sm text-brand-dark/70'>
@@ -319,6 +300,20 @@ export const CauseDetailPage: React.FC = () => {
           </aside>
         </div>
       </main>
+
+      <Modal isOpen={isQrPaymentOpen} onClose={() => setIsQrPaymentOpen(false)} title='Scan to donate' size='qr'>
+        <div className='space-y-4 text-center'>
+          <p className='text-sm text-brand-dark/70'>Scan this QR code in your payment app to donate {formatINR(payableAmount)}.</p>
+          {activePayment?.qr_image && (
+            <img
+              src={activePayment.qr_image}
+              alt='Donation payment QR code'
+              className='mx-auto aspect-square w-full rounded-lg bg-white object-contain p-2 shadow-sm'
+            />
+          )}
+          <p className='text-xs text-brand-dark/55'>Complete the payment in your chosen app.</p>
+        </div>
+      </Modal>
 
       <PublicFooter />
     </div>
